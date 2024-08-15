@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/modules/user_course_details_main_page.dart';
 import 'package:learncode/screens/user/widgets/appbar_widget.dart';
 import 'package:learncode/screens/user/widgets/courses_tile_widget.dart';
@@ -188,35 +189,41 @@ class UserHomeScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 30,
-                        crossAxisSpacing: 10,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (ctx, index) {
-                          return Padding(
-                              padding:const EdgeInsets.only(top: 25.0),
-                              child: TutorialTileWidget(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (ctx) =>
-                                          const UserTutorialMainPageDetails(
-                                        video:
-                                            'asset/video/3195394-uhd_3840_2160_25fps.mp4',
-                                        tutorialTitle: 'web designing',
-                                        discription:
-                                            'Web designing is the process of creating and organizing the visual layout and structure of websites. It involves designing the look and feel, including color schemes, fonts, images, and navigation, to ensure a user-friendly and visually appealing experience. Web designers use tools and techniques to build websites that are functional, responsive, and aligned with the needs of the target audience.',
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ));
-                        },
-                        childCount: 5,
+                    ValueListenableBuilder(
+                      valueListenable: courseNotifier,
+                      builder: (context, newAddedCourse, child) => 
+                      SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 30,
+                          crossAxisSpacing: 10,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (ctx, index) {
+                           final courseDatas = [newAddedCourse[index]];
+                            return Padding(
+                                padding:const EdgeInsets.only(top: 25.0),
+                                child: TutorialTileWidget(
+                                  course:courseDatas[index],
+                                  onPressed: () {
+                                    // Navigator.of(context).push(
+                                    //   MaterialPageRoute(
+                                    //     builder: (ctx) =>
+                                    //         const UserTutorialMainPageDetails(
+                                    //       video:
+                                    //           'asset/video/3195394-uhd_3840_2160_25fps.mp4',
+                                    //       tutorialTitle: 'web designing',
+                                    //       discription:
+                                    //           'Web designing is the process of creating and organizing the visual layout and structure of websites. It involves designing the look and feel, including color schemes, fonts, images, and navigation, to ensure a user-friendly and visually appealing experience. Web designers use tools and techniques to build websites that are functional, responsive, and aligned with the needs of the target audience.',
+                                    //    ),
+                                    //   ),
+                                    // );
+                                  },
+                                ));
+                          },
+                          childCount: newAddedCourse.length,
+                        ),
                       ),
                     ),
                     const SliverToBoxAdapter(

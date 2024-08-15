@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:learncode/buttons/add_more_tutorials.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:video_player/video_player.dart';
 
 class AddSubCourseDetails extends StatefulWidget {
   const AddSubCourseDetails({super.key});
+ static  VideoPlayerController? videoController;
+ static  XFile? pickedVideo;
 
   @override
   State<AddSubCourseDetails> createState() => _AddSubCourseDetailsState();
@@ -15,21 +16,18 @@ class AddSubCourseDetails extends StatefulWidget {
 
 class _AddSubCourseDetailsState extends State<AddSubCourseDetails> {
   ImageProvider<Object>? thumbnail;
-  VideoPlayerController? _videoController;
-  XFile? pickedVideo;
+ 
   ImagePicker picker = ImagePicker();
 
   @override
   void dispose() {
-    _videoController?.dispose();
+   AddSubCourseDetails.videoController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: SingleChildScrollView(
+    return  SingleChildScrollView(
         child: Column(
           children: [
            
@@ -45,12 +43,12 @@ class _AddSubCourseDetailsState extends State<AddSubCourseDetails> {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.grey[200], // Placeholder color
                 ),
-                child: pickedVideo != null
-                    ? _videoController != null &&
-                            _videoController!.value.isInitialized
+                child: AddSubCourseDetails.pickedVideo != null
+                    ?AddSubCourseDetails. videoController != null &&
+                            AddSubCourseDetails.videoController!.value.isInitialized
                         ? AspectRatio(
-                            aspectRatio: _videoController!.value.aspectRatio,
-                            child: VideoPlayer(_videoController!),
+                            aspectRatio:AddSubCourseDetails. videoController!.value.aspectRatio,
+                            child: VideoPlayer(AddSubCourseDetails.videoController!),
                           )
                         : const Center(child: CircularProgressIndicator())
                     : const Center(
@@ -78,8 +76,8 @@ class _AddSubCourseDetailsState extends State<AddSubCourseDetails> {
                 boxShadow: const [
                   BoxShadow(
                     color: Color.fromARGB(95, 0, 0, 0),
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
+                    blurRadius: 2,
+                    offset: Offset(0, 1),
                   ),
                 ],
               ),
@@ -108,8 +106,8 @@ class _AddSubCourseDetailsState extends State<AddSubCourseDetails> {
                 boxShadow: const [
                   BoxShadow(
                     color: Color.fromARGB(95, 0, 0, 0),
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
+                    blurRadius: 2,
+                    offset: Offset(0, 1),
                   ),
                 ],
               ),
@@ -130,22 +128,22 @@ class _AddSubCourseDetailsState extends State<AddSubCourseDetails> {
             ),
           ],
         ),
-      ),
+      
     );
   }
 
   void pickVideoFromGallery() async {
-    final XFile? selectedVideo =
+     XFile? selectedVideo =
         await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
-      _videoController?.dispose();
-      _videoController = VideoPlayerController.file(File(selectedVideo.path))
+     AddSubCourseDetails. videoController?.dispose();
+      AddSubCourseDetails.videoController  = VideoPlayerController.file(File(selectedVideo.path))
         ..initialize().then((_) {
           setState(() {});
-          _videoController!.play();
+         AddSubCourseDetails. videoController!.play();
         });
       setState(() {
-        pickedVideo = selectedVideo;
+        AddSubCourseDetails.pickedVideo = selectedVideo;
       });
     }
   }

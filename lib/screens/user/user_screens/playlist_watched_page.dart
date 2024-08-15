@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/screens/user/widgets/playlist_list.dart';
-import 'package:learncode/screens/user/widgets/user_watched_tutorials.dart';
+import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/modules/admin_sub_tutorial_detail_pade.dart';
+import 'package:learncode/screens/admin/widgets/palylist_tile.dart';
 
 class PlayListPage extends StatefulWidget {
-  const PlayListPage({super.key});
+    final int index;
+    final int subcourseIndex;
+    final int courseIndex;
+    final int subIndex;
+
+  const PlayListPage({super.key, required this.index, required this.subcourseIndex, required this.courseIndex, required this.subIndex,});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -66,46 +72,20 @@ class _PlayListPageState extends State<PlayListPage>
             const SizedBox(
               height: 20,
             ),
-            Container(
-              color: Colors.transparent,
-              child: TabBar(
-                dividerHeight: 0,
-                controller: _tabController,
-                indicator: BoxDecoration(
-                  color: themeTextColor,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                labelColor: whiteColor,
-                labelStyle: const TextStyle(
-                    color: blackColor, fontWeight: FontWeight.w600),
-                unselectedLabelStyle: const TextStyle(
-                    color: blackColor, fontWeight: FontWeight.w600),
-                tabs: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: const Text('PlayList'),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    child: const Text('Watched'),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  const PlaylistTab(),
-                  WatchedTab(),
-                ],
-              ),
-            ),
+              child: ValueListenableBuilder(
+                  valueListenable: courseNotifier,
+                  builder: (ctx, newPlaylist, child) {
+                    return ListView.builder(
+                        itemBuilder: (ctx, index) {
+                          return PalylistTile(playListTitle: 'playListTitle', subIndex: widget.subcourseIndex, courseIndex: widget.courseIndex, playlistIndex: index);
+                         // return PalylistTile(playListTitle: newPlaylist[widget.courseIndex].courseDetails!.subCourse![widget.subIndex].tutorialPlayList![index].playListTitle,subIndex: index,courseIndex: widget.courseIndex,playlistIndex: index,);
+                        },
+                        itemCount: 3,
+                       // itemCount: newPlaylist[widget.index].courseDetails!.subCourse![widget.subcourseIndex].tutorialPlayList!.length
+                       );
+                  }),
+            )
           ],
         ),
       ),

@@ -7,22 +7,23 @@ import 'package:learncode/constants/mediaquery.dart';
 
 class AddCourseThumbnail extends StatefulWidget {
   AddCourseThumbnail({super.key});
-
+  static final courseTitleController = TextEditingController();
+  static String? thumbnail;
   @override
   State<AddCourseThumbnail> createState() => _AddCourseThumbnailState();
 }
 
 class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
-  ImageProvider<Object>? thumbnail;
-
+  
   final ImagePicker picker = ImagePicker();
+
+  // final v = FileImage(AddCourseThumbnail.thumbnail);
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         children: [
-        
           InkWell(
             onTap: () {
               pickImageFromGallery();
@@ -31,13 +32,19 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
               width: ScreenSize.widthMed * 0.4,
               height: ScreenSize.widthMed * 0.3,
               decoration: BoxDecoration(
+                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                    image: thumbnail ??
-                        const AssetImage(
-                            'asset/image/5 Tips To Create Awesome Slideshows.jpeg'),
-                    fit: BoxFit.fill),
+                image: AddCourseThumbnail.thumbnail != null
+                    ? DecorationImage(image: FileImage(File(AddCourseThumbnail.thumbnail!)), fit: BoxFit.fill)
+                    : null,
               ),
+              child: AddCourseThumbnail.thumbnail == null
+                  ? const Center(
+                      child: Text(
+                        'Image not selected',
+                      ),
+                    )
+                  : null,
             ),
           ),
           SizedBox(
@@ -60,12 +67,13 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
               boxShadow: const [
                 BoxShadow(
                   color: Color.fromARGB(95, 0, 0, 0),
-                  blurRadius: 10,
-                  offset: Offset(0, 2),
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
                 ),
               ],
             ),
             child: TextFormField(
+              controller: AddCourseThumbnail.courseTitleController,
               decoration: const InputDecoration(
                   border: OutlineInputBorder(borderSide: BorderSide.none)),
             ),
@@ -90,7 +98,7 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
         await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
       setState(() {
-        thumbnail = FileImage(File(selectedImage.path));
+        AddCourseThumbnail.thumbnail = selectedImage.path;
       });
     }
   }

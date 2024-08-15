@@ -2,6 +2,7 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/buttons/delete_button.dart';
 import 'package:learncode/buttons/update_button.dart';
+import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/screens/user/widgets/sub_course_tile_widget.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
@@ -12,12 +13,13 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
   final String video;
   final String tutorialTitle;
   final String discription;
+  final int index;
 
   const AdminTutorialMainPageDetails({
     super.key,
     required this.video,
     required this.tutorialTitle,
-    required this.discription,
+    required this.discription, required this.index,
   });
 
   @override
@@ -25,14 +27,16 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
       _AdminTutorialMainPageDetailsState();
 }
 
-class _AdminTutorialMainPageDetailsState extends State<AdminTutorialMainPageDetails> {
+class _AdminTutorialMainPageDetailsState
+    extends State<AdminTutorialMainPageDetails> {
   late FlickManager flickManager;
 
   @override
   void initState() {
     super.initState();
     flickManager = FlickManager(
-      videoPlayerController: VideoPlayerController.asset(widget.video)
+      videoPlayerController: VideoPlayerController.asset(
+         widget.video)
         ..initialize().then((_) {
           setState(() {});
         }).catchError((error) {
@@ -58,7 +62,6 @@ class _AdminTutorialMainPageDetailsState extends State<AdminTutorialMainPageDeta
               Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Row(
-                  
                   children: [
                     CustomBackButton(
                         buttonColor: buttonGrey,
@@ -66,18 +69,17 @@ class _AdminTutorialMainPageDetailsState extends State<AdminTutorialMainPageDeta
                         onPressed: () {
                           Navigator.of(context).pop();
                         }),
-                       const SizedBox(
-                        width: 120,
-                       ),
+                    const SizedBox(
+                      width: 120,
+                    ),
                     const Text(
                       'Details',
                       style: tutorialPageTitletextStyle,
                     ),
-                   
                   ],
                 ),
               ),
-             const SizedBox(height: 10),
+              const SizedBox(height: 10),
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: SizedBox(
@@ -86,45 +88,56 @@ class _AdminTutorialMainPageDetailsState extends State<AdminTutorialMainPageDeta
                   child: FlickVideoPlayer(flickManager: flickManager),
                 ),
               ),
-             const SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.tutorialTitle,
-                      style:
-                         const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                     widget.tutorialTitle,
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                   const SizedBox(height: 10),
-                    Text(widget.discription,style: TextStyle(fontSize: 15),),
-                  const  SizedBox(height: 30),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics:const NeverScrollableScrollPhysics(),
-                      gridDelegate:const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisExtent: 230,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: 5,
-                      itemBuilder: (ctx, index) {
-                        return SubTutorialTileWidget(
-                          
-                          index: index,
-                        );
-                      },
+                    const SizedBox(height: 10),
+                    Text(
+                     widget.discription,
+                      style: TextStyle(fontSize: 15),
                     ),
-                    SizedBox(height: 20,),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      UpdateButton(),
-                      DeleteButton()
-                    ],
-                   )
+                    const SizedBox(height: 30),
+                    ValueListenableBuilder(
+                        valueListenable: courseNotifier,
+                        builder: (ctx, newCourseList, child) {
+                          return GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisExtent: 230,
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 20,
+                            ),
+                           
+                            itemBuilder: (ctx, index) {
+                              return SubTutorialTileWidget(
+                                subcourseIndex: index,
+                                index: index,
+                                courseint: index,
+                                subThumnail: newCourseList[widget.index].courseDetails!.subCourse![index].subCourseThumbnailPath,
+                                subTitle: newCourseList[widget.index].courseDetails!.subCourse![index].subCourseTitle,
+                              );
+                            },
+                            itemCount:newCourseList[widget.index].courseDetails!.subCourse!.length,
+                          );
+                        }),
+                  const   SizedBox(
+                      height: 20,
+                    ),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [UpdateButton(), DeleteButton()],
+                    )
                   ],
                 ),
               ),

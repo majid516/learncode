@@ -134,7 +134,7 @@ class _NamePageState extends State<NamePage> {
     final password = _passwordController.text.trim();
     if (name == adminName && password == adminPassword) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => const AdminMainScreen()));
+          MaterialPageRoute(builder: (ctx) =>  AdminMainScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         behavior: SnackBarBehavior.floating,

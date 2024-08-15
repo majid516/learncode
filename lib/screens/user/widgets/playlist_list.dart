@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/modules/user_sub_tutorial_detail_page.dart';
 
 class PlaylistTab extends StatelessWidget {
@@ -25,11 +26,11 @@ class PlaylistTab extends StatelessWidget {
                 ]),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => const UserSubTutorialDetailPage(
-                          video: 'asset/video/3195394-uhd_3840_2160_25fps.mp4',
-                          tutorialTitle: 'Introdution.',
-                        )));
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (ctx) => const UserSubTutorialDetailPage(
+                //           video: 'asset/video/3195394-uhd_3840_2160_25fps.mp4',
+                //           tutorialTitle: 'Introdution.',
+                //         )));
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 11, left: 20),
@@ -39,9 +40,9 @@ class PlaylistTab extends StatelessWidget {
                     color: themeTextColor,
                     size: 45,
                   ),
-                  title: Text(
-                    'tutorial ${index + 1}',
-                    style: accountPagetextStyle,
+                  title: Text(''
+                  //  course.courseDetails!.subCourse![0].tutorialPlayList![0].playListTitle,
+                    //style: accountPagetextStyle,
                   ),
                 ),
               ),

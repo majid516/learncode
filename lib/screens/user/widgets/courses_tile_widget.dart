@@ -1,10 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/models/course.dart';
 
 class TutorialTileWidget extends StatelessWidget {
+  final Course course;
   final VoidCallback onPressed;
-  const TutorialTileWidget({super.key, required this.onPressed});
+
+  const TutorialTileWidget({
+    super.key,
+    required this.course,
+    required this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,6 @@ class TutorialTileWidget extends StatelessWidget {
             child: Container(
               width: ScreenSize.widthMed * 0.43,
               height: ScreenSize.widthMed * 0.43,
-             
               decoration: BoxDecoration(
                 color: whiteColor,
                 borderRadius: BorderRadius.circular(15),
@@ -29,11 +36,11 @@ class TutorialTileWidget extends StatelessWidget {
                   ),
                 ],
               ),
-               child:const Padding(
-                padding:  EdgeInsets.only(top: 115, left: 20),
-                child:  Text(
-                  'Web designing',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 115, left: 20),
+                child: Text(
+                  course.courseTitle,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -47,10 +54,8 @@ class TutorialTileWidget extends StatelessWidget {
                 width: ScreenSize.widthMed * 0.36,
                 height: ScreenSize.widthMed * 0.3,
                 decoration: BoxDecoration(
-                  image: const DecorationImage(
-                    image: AssetImage(
-                      'asset/image/5 Tips To Create Awesome Slideshows.jpeg',
-                    ),
+                  image: DecorationImage(
+                    image: FileImage(File(course.courseThumbnailPath)),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(15),

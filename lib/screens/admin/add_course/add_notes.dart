@@ -2,9 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 
-class AddNotes extends StatelessWidget {
+class AddNotes extends StatefulWidget {
   const AddNotes({super.key});
+ static List<String> questionList = [];
+ static List<String> answerList = [];
 
+
+  static final questionController = TextEditingController();
+  static final answerController = TextEditingController();
+
+  @override
+  State<AddNotes> createState() => _AddNotesState();
+}
+
+class _AddNotesState extends State<AddNotes> {
+  @override
+  void dispose() {
+     AddNotes.questionList.add(AddNotes.questionController.text);
+     AddNotes.answerList.add(AddNotes.answerController.text);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return  Column(
@@ -19,12 +38,13 @@ class AddNotes extends StatelessWidget {
                     boxShadow: const [
                       BoxShadow(
                         color: Color.fromARGB(95, 0, 0, 0),
-                        blurRadius: 5,
-                        offset: Offset(0, 2),
+                        blurRadius: 2,
+                        offset: Offset(0, 1),
                       ),
                     ],
                   ),
                   child: TextFormField(
+                    controller:AddNotes.questionController,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(borderSide: BorderSide.none)),
                   ),
@@ -46,12 +66,13 @@ class AddNotes extends StatelessWidget {
                 boxShadow: const [
                   BoxShadow(
                     color: Color.fromARGB(95, 0, 0, 0),
-                    blurRadius: 5,
-                    offset: Offset(0, 2),
+                    blurRadius: 2,
+                    offset: Offset(0, 1),
                   ),
                 ],
               ),
               child: TextFormField(
+                controller: AddNotes.answerController,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
@@ -64,5 +85,5 @@ class AddNotes extends StatelessWidget {
         ),
       ],
     );
-  }
+     }
 }

@@ -3,25 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/database/database_funtions.dart';
 import 'package:video_player/video_player.dart';
 
-class AdminSubTutorialDetailPade extends StatefulWidget {
+class AdminSubTutorialDetailPage extends StatefulWidget {
   final String video;
   final String tutorialTitle;
-  
+  final int courseindex;
+    final int subCourseindex;
+    final int playlistIndex;
 
-  const AdminSubTutorialDetailPade({
+
+  const AdminSubTutorialDetailPage({
     super.key,
     required this.video,
-    required this.tutorialTitle,
+    required this.tutorialTitle, required this.courseindex, required this.subCourseindex, required this.playlistIndex,
     
   });
 
   @override
-  State<AdminSubTutorialDetailPade> createState() => _TutorialMainPageDetailsState();
+  State<AdminSubTutorialDetailPage> createState() => _TutorialMainPageDetailsState();
 }
 
-class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPade> {
+class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
   late FlickManager flickManager;
   Duration? videoDuration;
 
@@ -128,23 +132,26 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPade> {
                             fontWeight: FontWeight.w600,
                             color: themeTextColor),
                       ),
-                      ListView.builder(
+                      ValueListenableBuilder(valueListenable: courseNotifier, builder: (ctx,newNotes,child){
+                          return ListView.builder(
                         physics:const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemBuilder: (ctx, index) {
-                          return const ExpansionTile(
+                          return  ExpansionTile(
                             maintainState: false,
-                            title: Text('What is CSS'),
+                            title: Text(newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.questions[index]),
                             children: [
                               Text(
-                                'The PlaylistWatchedButton is an ElevatedButton, which isn’t suitable to be used directly as a Tab widget. TabBar expects its children to be Tab widgets or widgets styled appropriately to work within the TabBar.',
+                                newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.answers[index],
                                 style: TextStyle(fontSize: 15),
                               ),
                             ],
                           );
                         },
-                        itemCount: 10,
-                      ),
+                        itemCount: newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.questions.length,
+                      );
+                      })
+                     
                     ],
                   ),
                 ),
