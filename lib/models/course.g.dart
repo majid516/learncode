@@ -100,6 +100,8 @@ class SubCourseAdapter extends TypeAdapter<SubCourse> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return SubCourse(
+      id: fields[3] as int?,
+      courseName: fields[4] as String,
       subCourseThumbnailPath: fields[0] as String,
       subCourseTitle: fields[1] as String,
       tutorialPlayList: (fields[2] as List?)?.cast<TutorialPlayList>(),
@@ -109,13 +111,17 @@ class SubCourseAdapter extends TypeAdapter<SubCourse> {
   @override
   void write(BinaryWriter writer, SubCourse obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.subCourseThumbnailPath)
       ..writeByte(1)
       ..write(obj.subCourseTitle)
       ..writeByte(2)
-      ..write(obj.tutorialPlayList);
+      ..write(obj.tutorialPlayList)
+      ..writeByte(3)
+      ..write(obj.id)
+      ..writeByte(4)
+      ..write(obj.courseName);
   }
 
   @override
@@ -140,6 +146,7 @@ class TutorialPlayListAdapter extends TypeAdapter<TutorialPlayList> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TutorialPlayList(
+      subCourseName: fields[2] as String,
       playListTitle: fields[0] as String,
       subCourseDetails: fields[1] as SubCourseDetails?,
     );
@@ -148,11 +155,13 @@ class TutorialPlayListAdapter extends TypeAdapter<TutorialPlayList> {
   @override
   void write(BinaryWriter writer, TutorialPlayList obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.playListTitle)
       ..writeByte(1)
-      ..write(obj.subCourseDetails);
+      ..write(obj.subCourseDetails)
+      ..writeByte(2)
+      ..write(obj.subCourseName);
   }
 
   @override
@@ -214,6 +223,7 @@ class QuestionNotesAdapter extends TypeAdapter<QuestionNotes> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return QuestionNotes(
+      fields[2] as String,
       questions: (fields[0] as List).cast<String>(),
       answers: (fields[1] as List).cast<String>(),
     );
@@ -222,11 +232,13 @@ class QuestionNotesAdapter extends TypeAdapter<QuestionNotes> {
   @override
   void write(BinaryWriter writer, QuestionNotes obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.questions)
       ..writeByte(1)
-      ..write(obj.answers);
+      ..write(obj.answers)
+      ..writeByte(2)
+      ..write(obj.playListName);
   }
 
   @override

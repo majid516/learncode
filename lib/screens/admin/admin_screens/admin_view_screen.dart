@@ -8,7 +8,9 @@ import 'package:learncode/constants/mediaquery.dart';
 
 class AdminViewScreeen extends StatelessWidget {
   
-  const AdminViewScreeen({super.key});
+   AdminViewScreeen({super.key , });
+    
+  
  
   @override
   Widget build(BuildContext context) {
@@ -69,10 +71,12 @@ class AdminViewScreeen extends StatelessWidget {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (ctx) => AdminTutorialMainPageDetails(
-                                index:index ,
-                                video: courseData.courseThumbnailPath,
+                                courseImage: courseData.courseThumbnailPath,
+                                index: index,
+                                id:courseData.id!,
+                                introVideo: courseData.courseDetails!.courseIntroductionVideo,
                                 tutorialTitle: courseData.courseTitle,
-                                discription: courseData.courseDetails?.courseDescription ?? 'Description',
+                                description: courseData.courseDetails?.courseDescription ?? 'Description',
                               ),
                             ),
                           );

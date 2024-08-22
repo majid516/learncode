@@ -1,22 +1,24 @@
-
 import 'package:hive_flutter/hive_flutter.dart';
+
 part 'course.g.dart';
 
-
 @HiveType(typeId: 0)
-class Course {
+class Course extends HiveObject {
   @HiveField(0)
   int? id;
+
   @HiveField(1)
-  final String
-      courseThumbnailPath; // Change from ImageProvider<Object> to String
+   String courseThumbnailPath;
+
   @HiveField(2)
-  final String courseTitle;
+  String courseTitle;
+
   @HiveField(3)
   final CourseDetails? courseDetails;
 
+
   Course({
-    this.id,
+     this.id,
     required this.courseThumbnailPath,
     required this.courseTitle,
     this.courseDetails,
@@ -26,10 +28,10 @@ class Course {
 @HiveType(typeId: 1)
 class CourseDetails {
   @HiveField(0)
-  final String courseIntroductionVideo;
+   String courseIntroductionVideo;
 
   @HiveField(1)
-  final String courseDescription;
+   String courseDescription;
 
   @HiveField(2)
   final List<SubCourse>? subCourse;
@@ -42,15 +44,25 @@ class CourseDetails {
 }
 
 @HiveType(typeId: 2)
-class SubCourse {
+class SubCourse extends HiveObject{
   @HiveField(0)
-  final String subCourseThumbnailPath;
+   String subCourseThumbnailPath;
+
   @HiveField(1)
-  final String subCourseTitle;
+   String subCourseTitle;
+
   @HiveField(2)
   final List<TutorialPlayList>? tutorialPlayList;
 
+  @HiveField(3)
+  int? id;
+
+  @HiveField(4)
+  String courseName;
+
   SubCourse({
+    this.id,
+    required this.courseName,
     required this.subCourseThumbnailPath,
     required this.subCourseTitle,
     this.tutorialPlayList,
@@ -61,10 +73,15 @@ class SubCourse {
 class TutorialPlayList {
   @HiveField(0)
   final String playListTitle;
+
   @HiveField(1)
   final SubCourseDetails? subCourseDetails;
-
+  
+  @HiveField(2)
+  final String subCourseName;
+  
   TutorialPlayList({
+    required this.subCourseName,
     required this.playListTitle,
     this.subCourseDetails,
   });
@@ -74,6 +91,7 @@ class TutorialPlayList {
 class SubCourseDetails {
   @HiveField(0)
   final String subCourseVideo;
+
   @HiveField(1)
   final QuestionNotes? questionNotes;
 
@@ -90,11 +108,12 @@ class QuestionNotes {
 
   @HiveField(1)
   final List<String> answers;
+  
+  @HiveField(2)
+  final String playListName;
 
-  QuestionNotes({
+  QuestionNotes(this.playListName, {
     required this.questions,
     required this.answers,
   });
 }
-
-

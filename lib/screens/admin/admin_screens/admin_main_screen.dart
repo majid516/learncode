@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/models/course.dart';
+import 'package:learncode/screens/admin/add_course/add_course_details.dart';
+import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
 import 'package:learncode/screens/admin/add_course/add_new_course.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_account_screen.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_view_screen.dart';
@@ -25,8 +29,29 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      const AdminViewScreeen(),
-      AddNewCourse(onCourseAdded: goToFirstPage), 
+       AdminViewScreeen(),
+      AddNewCourse(
+        onCourseAdded: goToFirstPage,
+        submitFuntion: () {
+          if (AddCourseThumbnail.thumbnail != null &&
+              AddCourseDetails.pickedVideo != null &&
+              AddCourseDetails.courseDiscriptionController.text.isNotEmpty) {
+            var course = Course(
+              courseThumbnailPath: AddCourseThumbnail.thumbnail!,
+              courseTitle: AddCourseThumbnail.courseTitleController.text,
+              courseDetails: CourseDetails(
+                courseIntroductionVideo: AddCourseDetails.pickedVideo!.path,
+                courseDescription: AddCourseDetails.courseDiscriptionController.text,
+              ),
+            );
+            addNewCourse(course);
+          } else {
+            // Handle the case where required fields are missing
+            print('Please fill in all the required fields.');
+          }
+          return null;
+        },
+      ),
       AdminAccountScreen()
     ];
 
@@ -42,9 +67,9 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               BoxShadow(
                 color: Color.fromARGB(118, 0, 0, 0),
                 offset: Offset(0, -2),
-                blurRadius: 10
-              )
-            ]
+                blurRadius: 10,
+              ),
+            ],
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -80,8 +105,8 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
                   textColor: whiteColor,
                   icon: Icons.account_circle_rounded,
                   text: 'Account',
-                )
-              ]
+                ),
+              ],
             ),
           ),
         ),

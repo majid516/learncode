@@ -3,25 +3,31 @@ import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/constants/tile_colours.dart';
+import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/user/user_screens/playlist_watched_page.dart';
 
 class SubTutorialTileWidget extends StatelessWidget {
   final int index;
-  final String subTitle;
-  final String subThumnail;
-  final int subcourseIndex;
+  // final String subTitle;
+  // final String subThumnail;
   final int courseint ;
-  const SubTutorialTileWidget({
+  String subcourseImage;
+  final List<SubCourse> subCourse;
+   SubTutorialTileWidget({
+    required this.subcourseImage,
+    required this.index,
+    required this.courseint,
+    required this.subCourse,
     super.key,
-    required this.index, required this.subTitle,required this.subThumnail, required this.subcourseIndex, required this.courseint,
   });
 
   @override
   Widget build(BuildContext context) {
+    final currentSubCourse = subCourse[index];
     return InkWell(
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (ctx) =>  PlayListPage(index: index ,subcourseIndex:subcourseIndex,subIndex: subcourseIndex,courseIndex: courseint,)));
+            .push(MaterialPageRoute(builder: (ctx) =>  PlayListPage(index: index,courseIndex: courseint,subIndex: index,subCourseName: currentSubCourse.subCourseTitle,subImage: subcourseImage)));
       },
       child: Stack(
         children: [
@@ -53,7 +59,7 @@ class SubTutorialTileWidget extends StatelessWidget {
               width: ScreenSize.widthMed * 0.36,
               height: ScreenSize.widthMed * 0.25,
               decoration: BoxDecoration(
-                image:DecorationImage(image: FileImage(File(subThumnail)),fit: BoxFit.cover),
+                image:DecorationImage(image: FileImage(File(currentSubCourse.subCourseThumbnailPath)),fit: BoxFit.cover),
                 borderRadius: BorderRadius.circular(25),
                 boxShadow: [
                   BoxShadow(
@@ -69,7 +75,7 @@ class SubTutorialTileWidget extends StatelessWidget {
            Positioned(
             top: 150,
             left: 25,
-            child: Text(subTitle,
+            child: Text(currentSubCourse.subCourseTitle,
                 style:const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

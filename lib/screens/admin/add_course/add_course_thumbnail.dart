@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/constants/constants.dart';
@@ -7,17 +6,16 @@ import 'package:learncode/constants/mediaquery.dart';
 
 class AddCourseThumbnail extends StatefulWidget {
   AddCourseThumbnail({super.key});
+  
   static final courseTitleController = TextEditingController();
   static String? thumbnail;
+
   @override
   State<AddCourseThumbnail> createState() => _AddCourseThumbnailState();
 }
 
 class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
-  
   final ImagePicker picker = ImagePicker();
-
-  // final v = FileImage(AddCourseThumbnail.thumbnail);
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +23,7 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
-              pickImageFromGallery();
-            },
+            onTap: pickImageFromGallery,
             child: Container(
               width: ScreenSize.widthMed * 0.4,
               height: ScreenSize.widthMed * 0.3,
@@ -35,28 +31,30 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
                 image: AddCourseThumbnail.thumbnail != null
-                    ? DecorationImage(image: FileImage(File(AddCourseThumbnail.thumbnail!)), fit: BoxFit.fill)
+                    ? DecorationImage(
+                        image: FileImage(File(AddCourseThumbnail.thumbnail!)),
+                        fit: BoxFit.fill,
+                      )
                     : null,
               ),
-              child: AddCourseThumbnail.thumbnail == null
-                  ? const Center(
-                      child: Text(
-                        'Image not selected',
-                      ),
-                    )
-                  : null,
+              child: Center(
+                child: Text(
+                  'Image not selected',
+                  style: TextStyle(
+                    color: AddCourseThumbnail.thumbnail == null
+                        ? Colors.black
+                        : Colors.transparent,
+                  ),
+                ),
+              ),
             ),
           ),
-          SizedBox(
-            height: ScreenSize.heightMed * 0.03,
-          ),
+          SizedBox(height: ScreenSize.heightMed * 0.03),
           const Text(
             'add course thumbnail',
             style: addTutorialPagestyle,
           ),
-          SizedBox(
-            height: ScreenSize.heightMed * 0.05,
-          ),
+          SizedBox(height: ScreenSize.heightMed * 0.05),
           Container(
             width: ScreenSize.widthMed * 0.75,
             height: 60,
@@ -78,16 +76,12 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
                   border: OutlineInputBorder(borderSide: BorderSide.none)),
             ),
           ),
-          SizedBox(
-            height: ScreenSize.heightMed * 0.03,
-          ),
+          SizedBox(height: ScreenSize.heightMed * 0.03),
           const Text(
             'add course title',
             style: addTutorialPagestyle,
           ),
-          SizedBox(
-            height: ScreenSize.heightMed * 0.12,
-          ),
+          SizedBox(height: ScreenSize.heightMed * 0.12),
         ],
       ),
     );

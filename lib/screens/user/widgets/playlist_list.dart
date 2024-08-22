@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
-import 'package:learncode/database/database_funtions.dart';
-import 'package:learncode/modules/user_sub_tutorial_detail_page.dart';
+import 'package:learncode/models/course.dart';
+import 'package:learncode/modules/admin_sub_tutorial_detail_pade.dart';
 
 class PlaylistTab extends StatelessWidget {
-  const PlaylistTab({super.key});
+  final List<TutorialPlayList> playlists;
+final int courseIndex ;
+final int subCourseIndex;
+final String subTitle;
+final int playListIndex;
+  const PlaylistTab({super.key, required this.playlists, required this.courseIndex, required this.subCourseIndex, required this.subTitle, required this.playListIndex});
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 10,
+      itemCount: playlists.length,
       itemBuilder: (context, index) {
+        final playlist = playlists[index];
         return Padding(
           padding: const EdgeInsetsDirectional.symmetric(
               vertical: 10, horizontal: 20),
@@ -26,11 +33,7 @@ class PlaylistTab extends StatelessWidget {
                 ]),
             child: InkWell(
               onTap: () {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (ctx) => const UserSubTutorialDetailPage(
-                //           video: 'asset/video/3195394-uhd_3840_2160_25fps.mp4',
-                //           tutorialTitle: 'Introdution.',
-                //         )));
+                Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> AdminSubTutorialDetailPage(video:'asset/video/3195394-uhd_3840_2160_25fps.mp4', tutorialTitle: subTitle, courseindex: courseIndex, subCourseindex: subCourseIndex, playlistIndex: playListIndex,playListName: playlist.playListTitle,)));
               },
               child: Padding(
                 padding: const EdgeInsets.only(top: 11, left: 20),
@@ -38,11 +41,11 @@ class PlaylistTab extends StatelessWidget {
                   leading: const Icon(
                     Icons.slideshow,
                     color: themeTextColor,
-                    size: 45,
+                    size: 45, 
                   ),
-                  title: Text(''
-                  //  course.courseDetails!.subCourse![0].tutorialPlayList![0].playListTitle,
-                    //style: accountPagetextStyle,
+                  title: Text(
+                    playlist.playListTitle,
+                    style: accountPagetextStyle,
                   ),
                 ),
               ),

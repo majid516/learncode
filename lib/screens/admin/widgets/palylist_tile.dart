@@ -17,6 +17,7 @@ class PalylistTile extends StatelessWidget {
             'clicked clicked clicked clicked clicked clicked clicked  clicked clicked');
         Navigator.of(context).push(MaterialPageRoute(
             builder: (ctx) => AdminSubTutorialDetailPage(
+              playListName: playListTitle,
               playlistIndex:playlistIndex ,
                courseindex: courseIndex,
                subCourseindex: subIndex,

@@ -3,12 +3,15 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 
 class DeleteButton extends StatelessWidget {
-  const DeleteButton({super.key});
+  final VoidCallback onPressed;
+  const DeleteButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        onPressed;
+      },
       style: ElevatedButton.styleFrom(
           fixedSize: Size(ScreenSize.widthMed * 0.35, 50),
           side: const BorderSide(

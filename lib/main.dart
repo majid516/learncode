@@ -5,6 +5,8 @@ import 'package:learncode/models/course.dart';
 import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_main_screen.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/screens/user/spash_screen.dart';
+import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +49,8 @@ class LearnCode extends StatelessWidget {
         fontFamily: 'MyCustomFont',
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AdminMainScreen(),
+    //  home: UserHomeScreen(),
+     home:const AdminMainScreen(),
      // home:const SplashScreenPage() ,
     );
   }

@@ -4,19 +4,18 @@ import 'package:learncode/buttons/next_text_button.dart';
 import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/database/database_funtions.dart';
-import 'package:learncode/models/course.dart';
+
 import 'package:learncode/screens/admin/add_course/add_course_details.dart';
 import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
-import 'package:learncode/screens/admin/add_course/add_notes.dart';
-import 'package:learncode/screens/admin/add_course/add_playlist_title.dart';
-import 'package:learncode/screens/admin/add_course/add_sub_course_details.dart';
-import 'package:learncode/screens/admin/add_course/add_sub_couse_thumbnail.dart';
 
+
+// ignore: must_be_immutable
 class AddNewCourse extends StatefulWidget {
-  final VoidCallback onCourseAdded; // Add this callback
+  final VoidCallback onCourseAdded; 
 
-  AddNewCourse({super.key, required this.onCourseAdded}); // Make the callback required
+ int? Function() submitFuntion;
+  AddNewCourse(
+      {super.key, required this.onCourseAdded ,required this.submitFuntion}); // Make the callback required
 
   @override
   State<AddNewCourse> createState() => _AddNewCourseState();
@@ -29,51 +28,40 @@ class _AddNewCourseState extends State<AddNewCourse> {
   final _pages = [
     AddCourseThumbnail(),
     AddCourseDetails(),
-    AddSubCourseThumbnail(),
-    AddPlaylistTitle(),
-    AddSubCourseDetails(),
-    AddNotes()
   ];
 
-  void _submitCourse() async {
-    var courseS = Course(
-      courseThumbnailPath: AddCourseThumbnail.thumbnail ??
-          'asset/image/5 Tips To Create Awesome Slideshows.jpeg',
-      courseTitle: AddCourseThumbnail.courseTitleController.text,
-      courseDetails: CourseDetails(
-        courseIntroductionVideo: AddCourseDetails.pickedVideo?.path ?? '',
-        courseDescription: AddCourseDetails.courseDiscriptionController.text,
-        subCourse: AddSubCourseThumbnail.subCourseList.map((value) {
-          return SubCourse(
-            subCourseTitle: value.subCourseTitle,
-            subCourseThumbnailPath: value.subCourseThumbnailPath,
-            tutorialPlayList: AddPlaylistTitle.playlistList.map((val) {
-              return TutorialPlayList(
-                playListTitle: val.playListTitle,
-                subCourseDetails: SubCourseDetails(
-                  subCourseVideo: AddSubCourseDetails.pickedVideo?.path ?? '',
-                  questionNotes: QuestionNotes(questions: AddNotes.questionList, answers: AddNotes.answerList),
-                ),
-              );
-            }).toList(),
-          );
-        }).toList(),
-      ),
-    );
-
-    await addNewCourse(courseS);
-
+   void _submitCourse() async {
+    widget.submitFuntion();
+  
     showDialog(
       context: context,
-      builder: (ctx) => const AlertDialog(
+      builder: (ctx) => AlertDialog(
+        title: Text(
+          'success',
+          style: tutorialPageTitletextStyle,
+        ),
         content: Text('New Course Added Successfully'),
+        actions: [
+          TextButton(onPressed: () {
+                        Navigator.of(ctx).pop();
+
+            currentIndex = 2;
+          }, child: Text('add sub course')),
+          Container(
+            height: 20,
+            width: 2,
+            color: blackColor,
+          ),
+          TextButton(onPressed: () {
+                widget.onCourseAdded();
+
+            Navigator.of(ctx).pop();
+          }, child: Text('done')),
+        ],
       ),
     );
 
-    // Call the callback function to change the selected index
-    widget.onCourseAdded();
-
-    // Optionally, reset the PageController to the first page
+   
     controller.jumpToPage(0);
     setState(() {
       currentIndex = 0;

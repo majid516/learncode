@@ -4,8 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/continue_btn.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/database/database_funtions.dart';
-import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
 
 class NameEnteringPage extends StatefulWidget {
@@ -82,21 +80,15 @@ class _NameEnteringPageState extends State<NameEnteringPage> {
                 const SizedBox(height: 30),
                 ContinueButton(
                   title: 'Continue',
-                  onPressed: () async{
-                    if (_formKey.currentState!.validate()) {
-                      final userProfile =  image ??= const AssetImage("asset/image/userImage.jpeg");
-
-                     final userDetails = UserDetails(userProfile: userProfile, userName: _nameController.toString());
-
-                     addUserDetails(userDetails);
-
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (ctx) => UserHomeScreen(
-                                  
-                                )),
-                      );
-                    }
+                  onPressed: () async {
+                    // if (_formKey.currentState!.validate()) {
+                    //   Navigator.of(context).pushReplacement(
+                    //     MaterialPageRoute(builder: (ctx) =>  UserHomeScreen(
+                    //       name: _nameController.text,
+                    //       userProfile: image,
+                    //     )),
+                    //   );
+                    //}
                   },
                 ),
               ],

@@ -3,24 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 
 class AddCourseDetails extends StatefulWidget {
   AddCourseDetails({super.key});
-  static XFile? pickedVideo;
   static final courseDiscriptionController = TextEditingController();
+  static XFile? pickedVideo; // Use nullable type
+
   @override
   State<AddCourseDetails> createState() => _AddCourseDetailsState();
 }
 
 class _AddCourseDetailsState extends State<AddCourseDetails> {
   VideoPlayerController? _videoController;
-
   ImagePicker picker = ImagePicker();
 
   @override
   void dispose() {
-    _videoController?.dispose();
+    _videoController?.dispose(); // Safely dispose if not null
     super.dispose();
   }
 
@@ -43,8 +44,7 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
                   color: Colors.grey[200],
                 ),
                 child: AddCourseDetails.pickedVideo != null
-                    ? _videoController != null &&
-                            _videoController!.value.isInitialized
+                    ? _videoController != null && _videoController!.value.isInitialized
                         ? AspectRatio(
                             aspectRatio: _videoController!.value.aspectRatio,
                             child: VideoPlayer(_videoController!),
@@ -55,23 +55,9 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
                       ),
               ),
             ),
-            SizedBox(
-              height: ScreenSize.heightMed * 0.02,
-            ),
-            const Text(
-              'add course Indrodution video',
-              style: addTutorialPagestyle,
-            ),
-            SizedBox(
-              height: ScreenSize.heightMed * 0.02,
-            ),
-            const Text(
-              'add course title',
-              style: addTutorialPagestyle,
-            ),
-            SizedBox(
-              height: ScreenSize.heightMed * 0.04,
-            ),
+            SizedBox(height: ScreenSize.heightMed * 0.02),
+            const Text('add course Indrodution video', style: addTutorialPagestyle),
+            SizedBox(height: ScreenSize.heightMed * 0.04),
             Container(
               width: ScreenSize.widthMed * 0.8,
               height: 60,
@@ -93,34 +79,35 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
             ),
-            SizedBox(
-              height: ScreenSize.heightMed * 0.02,
-            ),
-            const Text(
-              'add course description',
-              style: addTutorialPagestyle,
-            ),
-            SizedBox(
-              height: ScreenSize.heightMed * 0.05,
-            ),
+            SizedBox(height: ScreenSize.heightMed * 0.02),
+            const Text('add course description', style: addTutorialPagestyle),
+            SizedBox(height: ScreenSize.heightMed * 0.05),
           ],
         ),
       ),
     );
   }
 
-  void pickVideoFromGallery() async {
-    final XFile? selectedVideo =
-        await picker.pickVideo(source: ImageSource.gallery);
+
+
+
+void pickVideoFromGallery() async {
+
+    final XFile? selectedVideo = await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
+      _videoController?.dispose(); // Dispose the previous controller if it exists
+
       _videoController = VideoPlayerController.file(File(selectedVideo.path))
         ..initialize().then((_) {
-          setState(() {});
-          _videoController!.play();
+          setState(() {
+            _videoController!.play(); // Play the video
+          });
         });
+
       setState(() {
-        AddCourseDetails.pickedVideo = selectedVideo;
+        AddCourseDetails.pickedVideo = selectedVideo; // Assign picked video
       });
     }
-  }
-}
+  
+
+}}

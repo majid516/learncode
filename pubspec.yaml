@@ -38,6 +38,7 @@ dependencies:
   hive_flutter: ^1.1.0
   image_picker: ^1.1.2
   lottie: ^3.1.2
+  permission_handler: ^11.3.1
   video_player: ^2.9.1
 
 dev_dependencies:
@@ -69,7 +70,6 @@ flutter:
     - asset/image/splash_2.png
     - asset/json/Flow 1.json
     - asset/image/5 Tips To Create Awesome Slideshows.jpeg
-
 
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

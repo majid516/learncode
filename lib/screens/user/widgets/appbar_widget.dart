@@ -1,31 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/database/database_funtions.dart';
-import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_login_screen.dart';
 import 'package:learncode/screens/user/user_screens/user_account_page.dart';
 
 class AppbarWidget extends StatelessWidget {
+final String name;
+  final ImageProvider<Object>? userProfile;
   const AppbarWidget({
-    super.key,
+    super.key, required this.name, this.userProfile, 
   });
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<UserDetails?>(
-      future: fechingUserDetails(), 
-    builder: (ctx,index){
-      if (index.connectionState == ConnectionState.waiting) {
-        return const CircularProgressIndicator();
-      }
-      if (index.hasError) {
-        return const CircularProgressIndicator();
-      }
-      final userData = index.data;
-    
-  
-    return Container(
+    return  Container(
       width: ScreenSize.widthMed,
       height: ScreenSize.heightMed * 0.1,
       decoration: BoxDecoration(
@@ -50,7 +38,7 @@ class AppbarWidget extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AccountPage(name: userData?.userName??'User', userProfile: userData?.userProfile??AssetImage('asset/image/userImage.jpeg'))));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AccountPage(name: name, userProfile: userProfile!)));
                   },
                   icon: const Icon(
                     Icons.menu,
@@ -60,11 +48,11 @@ class AppbarWidget extends StatelessWidget {
                 ),
                 CircleAvatar(
                   radius: 27,
-                  backgroundImage:userData?.userProfile??AssetImage('asset/image/userImage.jpeg'),
+                  backgroundImage:userProfile ??AssetImage('asset/image/userImage.jpeg'),
                 ),
                 const SizedBox(width: 10),
                 Text(
-                   userData?.userName??'user',
+                  name,
                   style:const TextStyle(
                       decoration: TextDecoration.none,
                       color: whiteColor,
@@ -90,8 +78,7 @@ class AppbarWidget extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  },);
+      )
+  );
   }
 }

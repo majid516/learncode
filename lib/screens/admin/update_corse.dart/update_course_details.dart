@@ -1,0 +1,207 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:learncode/buttons/submit_button.dart';
+import 'package:learncode/constants/constants.dart';
+import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/screens/admin/add_course/add_course_details.dart';
+import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
+import 'package:video_player/video_player.dart';
+
+class UpdateCourseDetails extends StatefulWidget {
+  String courseTitle;
+  int CourseIndex;
+  String courseDiscription;
+  String courseImage;
+  String courseVideo;
+
+  UpdateCourseDetails({
+    super.key,
+    required this.courseTitle,
+    required this.CourseIndex,
+    required this.courseDiscription,
+    required this.courseImage,
+    required this.courseVideo,
+  });
+
+  static String? updatedthumbnail;
+  static XFile? pickedVideo;
+
+  @override
+  State<UpdateCourseDetails> createState() => _UpdateCourseDetailsState();
+}
+
+class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
+  final ImagePicker picker = ImagePicker();
+  late VideoPlayerController _videoController; // Marked as late
+
+  final titleController = TextEditingController();
+  final discriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    titleController.text = widget.courseTitle;
+    discriptionController.text = widget.courseDiscription;
+
+    // Initialize the video controller with the provided course video
+    _videoController = VideoPlayerController.file(File(widget.courseVideo))
+      ..initialize().then((_) {
+        setState(() {}); // Update UI when the controller is ready
+      });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: ScreenSize.widthMed * 0.75,
+              height: 60,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadiusDirectional.circular(12),
+                border: Border.all(width: 0.2),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(95, 0, 0, 0),
+                    blurRadius: 2,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(borderSide: BorderSide.none)),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('data'),
+            SizedBox(height: 20),
+            InkWell(
+              onTap: pickImageFromGallery,
+              child: Container(
+                width: ScreenSize.widthMed * 0.4,
+                height: ScreenSize.widthMed * 0.3,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(15),
+                  image: AddCourseThumbnail.thumbnail != null
+                      ? DecorationImage(
+                          image: FileImage(File(AddCourseThumbnail.thumbnail!)),
+                          fit: BoxFit.fill,
+                        )
+                      : DecorationImage(
+                          image: FileImage(File(widget.courseImage)),
+                          fit: BoxFit.fill,
+                        ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text('data'),
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: pickVideoFromGallery,
+              child: Container(
+                width: ScreenSize.widthMed * 0.4,
+                height: ScreenSize.widthMed * 0.3,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.grey[200],
+                ),
+                child: AddCourseDetails.pickedVideo != null
+                    ? AspectRatio(
+                        aspectRatio: _videoController.value.aspectRatio,
+                        child: VideoPlayer(_videoController),
+                      )
+                    : AspectRatio(
+                        aspectRatio: 1 / 1,
+                        child: VideoPlayer(_videoController),
+                      ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('data'),
+            SizedBox(height: 20),
+            Container(
+              width: ScreenSize.widthMed * 0.75,
+              height: 60,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadiusDirectional.circular(12),
+                border: Border.all(width: 0.2),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color.fromARGB(95, 0, 0, 0),
+                    blurRadius: 2,
+                    offset: Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                controller: discriptionController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(borderSide: BorderSide.none)),
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('data'),
+            SizedBox(height: 20),
+            SubmitButton(
+              onPressed: () {
+                updateCouse(
+                  
+                  widget.CourseIndex,
+                  titleController.text,
+                  discriptionController.text,
+                  UpdateCourseDetails.updatedthumbnail ?? '',
+                  widget.courseVideo,
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void pickVideoFromGallery() async {
+    final XFile? selectedVideo = await picker.pickVideo(source: ImageSource.gallery);
+    if (selectedVideo != null) {
+      _videoController.dispose(); // Dispose of the previous controller
+
+      // Initialize the new video controller
+      _videoController = VideoPlayerController.file(File(selectedVideo.path))
+        ..initialize().then((_) {
+          setState(() {}); // Update the UI when the controller is ready
+          _videoController.play();
+        });
+
+      setState(() {
+        AddCourseDetails.pickedVideo = selectedVideo; // Assign picked video
+      });
+    }
+  }
+
+  Future<void> pickImageFromGallery() async {
+    final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (selectedImage != null) {
+      setState(() {
+        UpdateCourseDetails.updatedthumbnail = selectedImage.path;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose(); // Dispose of the controller
+    super.dispose();
+  }
+}

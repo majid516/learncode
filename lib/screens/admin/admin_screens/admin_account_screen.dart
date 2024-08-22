@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
+import 'package:learncode/screens/user/widgets/account_card.dart';
 
 class AdminAccountScreen extends StatelessWidget {
-  final String? userName2;
-  final ImageProvider<Object>? profileImage;
-  const AdminAccountScreen({super.key,  this.userName2,  this.profileImage});
+  const AdminAccountScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,6 @@ class AdminAccountScreen extends StatelessWidget {
         backgroundColor: whiteColor,
         body: Center(
           child: Column(
-            
             children: [
               Expanded(
                 child: Column(
@@ -73,106 +73,35 @@ class AdminAccountScreen extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      width: ScreenSize.widthMed * 0.8,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadiusDirectional.circular(12),
-                          border: Border.all(width: 0.2),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Color.fromARGB(95, 0, 0, 0),
-                                blurRadius: 10,
-                                offset: Offset(0, 2))
-                          ]),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Search tutorial',
-                              style: accountPagetextStyle,
-                            ),
-                            Icon(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        AccountCard(
+                            titleText: 'search',
+                            icon:const Icon(
                               Icons.search,
                               color: themeTextColor,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                      onTap: (){
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx)=>  UserHomeScreen()));
-                      },
-                      child: Container(
-                        width: ScreenSize.widthMed * 0.8,
-                        height: 60,
-                        decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadiusDirectional.circular(12),
-                            border: Border.all(width: 0.2),
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Color.fromARGB(95, 0, 0, 0),
-                                  blurRadius: 10,
-                                  offset: Offset(0, 2))
-                            ]),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 35.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Signout',
-                                style: accountPagetextStyle,
-                              ),
-                              Icon(
-                                Icons.logout,
-                                color: themeTextColor,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: ScreenSize.widthMed * 0.8,
-                      height: 60,
-                      decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadiusDirectional.circular(12),
-                          border: Border.all(width: 0.2),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Color.fromARGB(95, 0, 0, 0),
-                                blurRadius: 5,
-                                offset: Offset(0, 2))
-                          ]),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'about',
-                              style: accountPagetextStyle,
                             ),
-                            Icon(
+                            onPressed: () {}),
+                        AccountCard(
+                            titleText: 'sign out',
+                            icon:const Icon(
+                              Icons.logout,
+                              color: themeTextColor,
+                            ),
+                            onPressed: () {
+                              // Navigator.of(context).pushReplacement(
+                              //     MaterialPageRoute(
+                              //         builder: (ctx) =>const UserHomeScreen()));
+                            }),
+                        AccountCard(
+                            titleText: 'about',
+                            icon:const Icon(
                               Icons.info_outline,
                               color: themeTextColor,
-                            )
-                          ],
-                        ),
-                      ),
+                            ),
+                            onPressed: () {}),
+                      ],
                     ),
                   ],
                 ),

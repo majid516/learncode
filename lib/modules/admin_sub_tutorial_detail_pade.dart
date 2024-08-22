@@ -1,28 +1,35 @@
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/models/course.dart';
+import 'package:learncode/screens/admin/add_course/add_notes.dart';
 import 'package:video_player/video_player.dart';
 
 class AdminSubTutorialDetailPage extends StatefulWidget {
   final String video;
   final String tutorialTitle;
   final int courseindex;
-    final int subCourseindex;
-    final int playlistIndex;
-
+  final int subCourseindex;
+  final int playlistIndex;
+  final String playListName;
 
   const AdminSubTutorialDetailPage({
     super.key,
     required this.video,
-    required this.tutorialTitle, required this.courseindex, required this.subCourseindex, required this.playlistIndex,
-    
+    required this.tutorialTitle,
+    required this.courseindex,
+    required this.subCourseindex,
+    required this.playlistIndex,
+    required this.playListName,
   });
 
   @override
-  State<AdminSubTutorialDetailPage> createState() => _TutorialMainPageDetailsState();
+  State<AdminSubTutorialDetailPage> createState() =>
+      _TutorialMainPageDetailsState();
 }
 
 class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
@@ -32,22 +39,25 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
   @override
   void initState() {
     super.initState();
+    _initializeVideo();
+    _loadNotes();
+  }
+
+  Future<void> _initializeVideo() async {
     final videoPlayerController = VideoPlayerController.asset(widget.video);
     flickManager = FlickManager(
       videoPlayerController: videoPlayerController
         ..initialize().then((_) {
-          // Set the duration once the video is initialized
           if (mounted) {
             setState(() {
               videoDuration = videoPlayerController.value.duration;
             });
           }
         }).catchError((error) {
-         return null;
+          return null;
         }),
     );
 
-    // Add a listener to update duration when the video player is initialized
     videoPlayerController.addListener(() {
       if (videoPlayerController.value.isInitialized && videoDuration == null) {
         if (mounted) {
@@ -57,6 +67,14 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
         }
       }
     });
+  }
+
+  Future<void> _loadNotes() async {
+    final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
+    final notes = noteBox.values
+        .where((note) => note.playListName == widget.playListName)
+        .toList();
+    questionNoteNotifier.value = notes;
   }
 
   @override
@@ -87,16 +105,17 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           }),
-                       const   SizedBox(width: 120,),
-                       const Text(
+                      const SizedBox(
+                        width: 120,
+                      ),
+                      const Text(
                         'Details',
                         style: tutorialPageTitletextStyle,
                       ),
-                      
                     ],
                   ),
                 ),
-               const SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
                   child: SizedBox(
@@ -110,48 +129,77 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                    const  Text(
-                        'Introduction',
-                        style: TextStyle(
+                      Text(
+                        widget.playListName,
+                        style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: themeTextColor),
                       ),
-                     const SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(videoDuration != null
                             ? 'Duration : ${_findDuration(videoDuration!)}'
                             : 'loading..'),
                       ),
-                     const SizedBox(height: 10),
-                     const Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         'Notes',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
                             color: themeTextColor),
                       ),
-                      ValueListenableBuilder(valueListenable: courseNotifier, builder: (ctx,newNotes,child){
+                      ValueListenableBuilder(
+                        valueListenable: questionNoteNotifier,
+                        builder: (context, List<QuestionNotes> notes, _) {
                           return ListView.builder(
-                        physics:const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (ctx, index) {
-                          return  ExpansionTile(
-                            maintainState: false,
-                            title: Text(newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.questions[index]),
-                            children: [
-                              Text(
-                                newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.answers[index],
-                                style: TextStyle(fontSize: 15),
-                              ),
-                            ],
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: notes.length,
+                            itemBuilder: (ctx, noteIndex) {
+                              final note = notes[noteIndex];
+
+                              // Ensure that the index is within the valid range
+                              return Column(
+                                children: List.generate(
+                                  note.questions.length,
+                                  (i) {
+                                    if (i < note.answers.length) {
+                                      // Check to ensure we have corresponding answers
+                                      return ExpansionTile(
+                                        title: Text(note.questions[i]),
+                                        children: [
+                                          ListTile(
+                                              title: Text(note.answers[i])),
+                                        ],
+                                      );
+                                    } else {
+                                      return ExpansionTile(
+                                        title: Text("Question without answer"),
+                                        children: [
+                                          ListTile(
+                                              title:
+                                                  Text("No answer available")),
+                                        ],
+                                      );
+                                    }
+                                  },
+                                ),
+                              );
+                            },
                           );
                         },
-                        itemCount: newNotes[widget.courseindex].courseDetails!.subCourse![widget.subCourseindex].tutorialPlayList![widget.playlistIndex].subCourseDetails!.questionNotes!.questions.length,
-                      );
-                      })
-                     
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (ctx) => AddNotes(
+                                      playListName: widget.playListName,
+                                    )));
+                          },
+                          child: Text('Add Note')),
                     ],
                   ),
                 ),
@@ -170,4 +218,3 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
     return '$minute : $second';
   }
 }
-
