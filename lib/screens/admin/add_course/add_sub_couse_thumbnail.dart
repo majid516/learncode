@@ -7,35 +7,43 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
-import 'package:learncode/screens/admin/admin_screens/admin_main_screen.dart';
 
 class AddSubCourseThumbnail extends StatefulWidget {
   final int indexCourse;
-  
-  final String courseNamee ;
-  final Course course; // Fixed typo from 'cource' to 'course'
-  AddSubCourseThumbnail({super.key, required this.indexCourse, required this.course,  required this.courseNamee});
+  final String courseNamee;
+  final Course course;
+  const AddSubCourseThumbnail(
+      {super.key,
+      required this.indexCourse,
+      required this.course,
+      required this.courseNamee});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddSubCourseThumbnailState createState() => _AddSubCourseThumbnailState();
 }
 
 class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
-  final subCourseTitleController = TextEditingController(); // Fixed typo from 'subCourseTitlecontroller' to 'subCourseTitleController'
+  final subCourseTitleController = TextEditingController();
   final ImagePicker picker = ImagePicker();
   String? thumbnail;
   List<Course> courseList = [];
 
   @override
   void dispose() {
-    subCourseTitleController.dispose(); // Fixed typo here as well
+    subCourseTitleController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // fechinSubcourse();
     return Scaffold(
-      appBar: AppBar(title: Text('Add Sub Course Thumbnail')), // Added AppBar for better navigation context
+      appBar: AppBar(
+          title: const Text(
+        'Add Sub Course Thumbnail',
+        style: accountPagetextStyle,
+      )),
       body: SingleChildScrollView(
         child: SizedBox(
           width: ScreenSize.widthMed,
@@ -69,7 +77,8 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               SizedBox(height: ScreenSize.heightMed * 0.03),
               const Text(
                 'Add Sub Course Thumbnail',
-               // style: addTutorialPageStyle, // Fixed typo here from 'addTutorialPagestyle' to 'addTutorialPageStyle'
+                style:
+                    addTutorialPagestyle, // Fixed typo here from 'addTutorialPagestyle' to 'addTutorialPageStyle'
               ),
               SizedBox(height: ScreenSize.heightMed * 0.05),
               Container(
@@ -88,7 +97,9 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
                   ],
                 ),
                 child: TextFormField(
-                  controller: subCourseTitleController, // Fixed typo here as well
+                 
+                  controller:
+                      subCourseTitleController, // Fixed typo here as well
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide.none),
                     hintText: 'Enter Sub Course Title',
@@ -98,25 +109,26 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               SizedBox(height: ScreenSize.heightMed * 0.03),
               const Text(
                 'Add Sub Course Title',
-             //   style: addTutorialPageStyle, // Fixed typo here
+                style: addTutorialPagestyle, // Fixed typo here
               ),
               SizedBox(height: ScreenSize.heightMed * 0.12),
               SubmitButton(
                 onPressed: () {
-                  if (thumbnail != null && subCourseTitleController.text.isNotEmpty) {
+                  if (thumbnail != null &&
+                      subCourseTitleController.text.isNotEmpty) {
                     var subCourse = SubCourse(
-                      courseName: widget.courseNamee,
+                      courseId: widget.course.id!,
+                      //courseName: widget.courseNamee,
                       subCourseThumbnailPath: thumbnail!,
                       subCourseTitle: subCourseTitleController.text,
                     );
                     addNewSubCourse(subCourse);
-                 print(widget.courseNamee);
-                   
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx)=> AdminMainScreen()));
-
+                    //  print(widget.courseNamee);
+                    Navigator.of(context).pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      const SnackBar(
+                        backgroundColor: Color.fromARGB(255, 192, 32, 21),
                         content: Text('Please add a thumbnail and title.'),
                       ),
                     );
@@ -131,12 +143,12 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
   }
 
   Future<void> pickImageFromGallery() async {
-    final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? selectedImage =
+        await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
       setState(() {
         thumbnail = selectedImage.path;
       });
     }
   }
-  
 }

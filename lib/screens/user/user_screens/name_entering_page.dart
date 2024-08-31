@@ -81,14 +81,14 @@ class _NameEnteringPageState extends State<NameEnteringPage> {
                 ContinueButton(
                   title: 'Continue',
                   onPressed: () async {
-                    // if (_formKey.currentState!.validate()) {
-                    //   Navigator.of(context).pushReplacement(
-                    //     MaterialPageRoute(builder: (ctx) =>  UserHomeScreen(
-                    //       name: _nameController.text,
-                    //       userProfile: image,
-                    //     )),
-                    //   );
-                    //}
+                    if (_formKey.currentState!.validate()) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (ctx) =>  UserHomeScreen(
+                          name: _nameController.text,
+                          userProfile: image,
+                        )),
+                      );
+                    }
                   },
                 ),
               ],

@@ -62,7 +62,8 @@ class GetStarted extends StatelessWidget {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (ctx) => NameEnteringPage()));
+                                    builder: (ctx) =>
+                                        const NameEnteringPage()));
                           })
                     ],
                   ),

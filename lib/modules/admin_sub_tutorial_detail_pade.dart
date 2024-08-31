@@ -1,30 +1,46 @@
+import 'dart:io';
+
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learncode/buttons/add_sub_course.dart';
 import 'package:learncode/buttons/backbutton.dart';
+import 'package:learncode/buttons/favourite_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/admin/add_course/add_notes.dart';
+import 'package:learncode/screens/admin/update_corse.dart/update_playlist.dart';
+import 'package:learncode/screens/admin/widgets/delete_alert.dart';
+import 'package:learncode/screens/user/provider/favourite_provider.dart';
 import 'package:video_player/video_player.dart';
 
 class AdminSubTutorialDetailPage extends StatefulWidget {
-  final String video;
+  final String subVideo;
   final String tutorialTitle;
-  final int courseindex;
+  final int? courseindex;
   final int subCourseindex;
   final int playlistIndex;
   final String playListName;
+  final bool isAdmin;
+  final int subcourseId;
+  final int playlistId;
+  final TutorialPlayList playlist;
 
   const AdminSubTutorialDetailPage({
     super.key,
-    required this.video,
+    required this.subVideo,
     required this.tutorialTitle,
-    required this.courseindex,
+     this.courseindex,
     required this.subCourseindex,
     required this.playlistIndex,
     required this.playListName,
+    required this.isAdmin,
+    required this.subcourseId,
+    required this.playlistId,
+     required this.playlist,
+    //required this.a,
   });
 
   @override
@@ -44,7 +60,8 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
   }
 
   Future<void> _initializeVideo() async {
-    final videoPlayerController = VideoPlayerController.asset(widget.video);
+    final videoPlayerController =
+        VideoPlayerController.file(File(widget.subVideo));
     flickManager = FlickManager(
       videoPlayerController: videoPlayerController
         ..initialize().then((_) {
@@ -72,7 +89,7 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
   Future<void> _loadNotes() async {
     final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
     final notes = noteBox.values
-        .where((note) => note.playListName == widget.playListName)
+        .where((note) => note.playlistId == widget.playlistId)
         .toList();
     questionNoteNotifier.value = notes;
   }
@@ -85,35 +102,95 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final favoriiteProvider = FavouriteProvider.of(context);
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      top: 40.0, left: 25, right: 25, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomBackButton(
-                          buttonColor: buttonGrey,
-                          iconColor: themeTextColor,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                      const SizedBox(
-                        width: 120,
-                      ),
-                      const Text(
-                        'Details',
-                        style: tutorialPageTitletextStyle,
-                      ),
-                    ],
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomBackButton(
+                        buttonColor: buttonGrey,
+                        iconColor: themeTextColor,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        }),
+                    const Text(
+                      'Details',
+                      style: tutorialPageTitletextStyle,
+                    ),
+                    widget.isAdmin
+                        ? PopupMenuButton<void>(
+                            icon: const Icon(
+                              Icons.more_vert_outlined,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              size: 40,
+                            ),
+                            itemBuilder: (context) => [
+                              PopupMenuItem<void>(
+                                child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (ctx) => UpdatePlaylist(
+                                                playlistId: widget.playlistId,
+                                                subVideo: widget.subVideo,
+                                                playlistName:
+                                                    widget.playListName,
+                                              ));
+                                    },
+                                    child: const Text(
+                                      'update',
+                                      style: TextStyle(
+                                          color: themeTextColor,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700),
+                                    )),
+                              ),
+                              PopupMenuItem<void>(
+                                child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (ctx) => DeleteAlert(
+                                              message:
+                                                  'do you ready to remove this permenently',
+                                              deleteOnPressed: () {
+                                                deletePlaylist(
+                                                    widget.playlistId);
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                              },
+                                              cancelOnpressed: () =>
+                                                  Navigator.of(context).pop()));
+                                    },
+                                    child: const Text(
+                                      'delete',
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w700),
+                                    )),
+                              ),
+                            ],
+                          )
+                        : FavouriteButton(
+                            buttonColor: buttonGrey,
+                            onPressed: () {
+                              favoriiteProvider.toggleFavourite(widget.playlist);
+                            },
+                            icon: Icon(
+                              favoriiteProvider.isExist(widget.playlist)?
+                              Icons.favorite:Icons.favorite_border,
+                              color: Colors.red,
+                              ))
+                  ],
                 ),
                 const SizedBox(height: 20),
                 ClipRRect(
@@ -154,29 +231,38 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
                       ValueListenableBuilder(
                         valueListenable: questionNoteNotifier,
                         builder: (context, List<QuestionNotes> notes, _) {
+                          if (notes.isEmpty) {
+                            return SizedBox(
+                              width: ScreenSize.widthMed,
+                              height: ScreenSize.heightMed*0.3,
+                              child:const Center(child: Text('No Notes Availabe')));
+                          }else{
                           return ListView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: notes.length,
                             itemBuilder: (ctx, noteIndex) {
                               final note = notes[noteIndex];
-
-                              // Ensure that the index is within the valid range
+                               
                               return Column(
                                 children: List.generate(
                                   note.questions.length,
                                   (i) {
                                     if (i < note.answers.length) {
-                                      // Check to ensure we have corresponding answers
                                       return ExpansionTile(
-                                        title: Text(note.questions[i]),
+                                        title: Text(
+                                          note.questions[i],
+                                          style:const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w700),
+                                        ),
                                         children: [
                                           ListTile(
                                               title: Text(note.answers[i])),
                                         ],
                                       );
                                     } else {
-                                      return ExpansionTile(
+                                      return const ExpansionTile(
                                         title: Text("Question without answer"),
                                         children: [
                                           ListTile(
@@ -188,18 +274,11 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
                                   },
                                 ),
                               );
-                            },
-                          );
+                               }
+                            
+                          );}
                         },
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (ctx) => AddNotes(
-                                      playListName: widget.playListName,
-                                    )));
-                          },
-                          child: Text('Add Note')),
                     ],
                   ),
                 ),
@@ -207,6 +286,21 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
             ),
           ),
         ),
+        floatingActionButton: widget.isAdmin == true
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AddSubCourseButton(
+                      title: '+ add notes',
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => AddNotes(
+                                  playListId: widget.playlistId,
+                                )));
+                      }),
+                ],
+              )
+            : const SizedBox(),
       ),
     );
   }

@@ -9,9 +9,8 @@ class DeleteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        onPressed;
-      },
+      onPressed: 
+        onPressed,
       style: ElevatedButton.styleFrom(
           fixedSize: Size(ScreenSize.widthMed * 0.35, 50),
           side: const BorderSide(

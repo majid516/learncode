@@ -5,7 +5,7 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 
 class AddCourseThumbnail extends StatefulWidget {
-  AddCourseThumbnail({super.key});
+  const AddCourseThumbnail({super.key});
   
   static final courseTitleController = TextEditingController();
   static String? thumbnail;

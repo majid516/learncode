@@ -3,37 +3,41 @@ import 'dart:io';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:learncode/buttons/add_sub_course.dart';
 import 'package:learncode/buttons/backbutton.dart';
+import 'package:learncode/buttons/delete_button.dart';
+import 'package:learncode/buttons/enroll_button.dart';
+import 'package:learncode/buttons/update_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
-import 'package:learncode/screens/admin/add_course/add_course_details.dart';
-import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
 import 'package:learncode/screens/admin/add_course/add_sub_couse_thumbnail.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_course_details.dart';
+import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
+import 'package:learncode/screens/user/widgets/enrolling_alert.dart';
 import 'package:learncode/screens/user/widgets/sub_course_tile_widget.dart';
 import 'package:video_player/video_player.dart';
 
 class AdminTutorialMainPageDetails extends StatefulWidget {
-
   final String introVideo;
   final String tutorialTitle;
   final String description;
   final int id;
   final int index;
   final String courseImage;
-
-  
+  final bool isAdmin;
+  final Course course;
   const AdminTutorialMainPageDetails({
     super.key,
     required this.introVideo,
     required this.tutorialTitle,
     required this.description,
     required this.id,
-    
-    required this.index, required this.courseImage, 
+    required this.index,
+    required this.courseImage,
+    this.isAdmin = false,
+    required this.course,
   });
 
   @override
@@ -44,8 +48,7 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
 class _AdminTutorialMainPageDetailsState
     extends State<AdminTutorialMainPageDetails> {
   late FlickManager flickManager;
-  List<SubCourse> filteredSubCourses = [];
-  
+  ValueNotifier<List<SubCourse>> filteredSubCoursesNotifier = ValueNotifier([]);
 
   @override
   void initState() {
@@ -55,7 +58,6 @@ class _AdminTutorialMainPageDetailsState
         ..initialize().then((_) {
           setState(() {});
         }).catchError((error) {
-          print('video is not working');
           return null;
         }),
     );
@@ -66,27 +68,21 @@ class _AdminTutorialMainPageDetailsState
   @override
   void dispose() {
     flickManager.dispose();
+    filteredSubCoursesNotifier.dispose();
     super.dispose();
   }
 
   Future<void> fetchSubCourses(String courseName) async {
     List<SubCourse> allSubCourses = await getAllSubCourses();
 
-    print('All SubCourses:');
-    allSubCourses.forEach((subCourse) {
-      print(
-          'Course Name: ${subCourse.courseName}, SubCourse Title: ${subCourse.subCourseTitle}');
-    });
+    filteredSubCoursesNotifier.value = allSubCourses
+        .where((subCourse) => subCourse.courseId == widget.id)
+        .toList();
 
-    setState(() {
-      filteredSubCourses = allSubCourses
-          .where((subCourse) =>
-              subCourse.courseName.toLowerCase() == courseName.toLowerCase())
-          .toList();
-    });
-
-    print('Filtered SubCourses length: ${filteredSubCourses.length}');
-    filteredSubCourses.forEach((subCourse) => print(subCourse.subCourseTitle));
+    // print(
+    //     'Filtered SubCourses length: ${filteredSubCoursesNotifier.value.length}');
+    filteredSubCoursesNotifier.value
+        .forEach((subCourse) => print(subCourse.subCourseTitle));
   }
 
   Future<List<SubCourse>> getAllSubCourses() async {
@@ -96,6 +92,11 @@ class _AdminTutorialMainPageDetailsState
 
   @override
   Widget build(BuildContext context) {
+    final enrolledProvider = EnrolledCourseProvider.of(context);
+    getAllSubCourses();
+    fechingSubcourse();
+    getAllEnrolledCourse();
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -103,8 +104,10 @@ class _AdminTutorialMainPageDetailsState
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Padding(
-                padding: const EdgeInsets.all(25.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomBackButton(
                         buttonColor: buttonGrey,
@@ -112,13 +115,38 @@ class _AdminTutorialMainPageDetailsState
                         onPressed: () {
                           Navigator.of(context).pop();
                         }),
-                    const SizedBox(
-                      width: 120,
-                    ),
                     const Text(
                       'Details',
                       style: tutorialPageTitletextStyle,
                     ),
+                    widget.isAdmin
+                        ? const SizedBox()
+                        : enrolledLabel()
+                            // : enrolledCourseNotifier.value.contains(widget.id)
+                            // : enrolledCourseNotifier.value.any((value)=> value.id == widget.id)
+                            // enrolledProvider.isExist(widget.course)
+                            ? Container(
+                                width: ScreenSize.widthMed * 0.2,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                    gradient: themePurple,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Center(
+                                    child: Text(
+                                  'enrolled',
+                                  style: TextStyle(
+                                      color: whiteColor,
+                                      fontWeight: FontWeight.w600),
+                                )),
+                              )
+                            : EnrollButton(onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (ctx) => EnrollingAlert(
+                                          courseId: widget.id,
+                                          course: widget.course,
+                                        ));
+                              }),
                   ],
                 ),
               ),
@@ -133,7 +161,7 @@ class _AdminTutorialMainPageDetailsState
               ),
               const SizedBox(height: 20),
               Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -145,66 +173,132 @@ class _AdminTutorialMainPageDetailsState
                     const SizedBox(height: 10),
                     Text(
                       widget.description,
-                      style: TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 17),
                     ),
                     const SizedBox(height: 30),
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisExtent: 230,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: filteredSubCourses.length,
-                      itemBuilder: (ctx, index) {
-                        if (index < filteredSubCourses.length) {
-                          return SubTutorialTileWidget(
-                            subCourse: filteredSubCourses,
-                            index: index,
-                            courseint: widget.index,
-                            subcourseImage: filteredSubCourses[index].subCourseThumbnailPath,
-                          );
-                        } else {
-                          // This block should never be reached since `itemCount` is set to `filteredSubCourses.length`.
-                          return Container();
+                    ValueListenableBuilder<List<SubCourse>>(
+                      valueListenable: filteredSubCoursesNotifier,
+                      builder: (context, filteredSubCourses, child) {
+                        if (filteredSubCourses.isEmpty) {
+                          return SizedBox(
+                              width: ScreenSize.widthMed,
+                              height: ScreenSize.widthMed * 0.5,
+                              child: const Center(
+                                  child: Text('No SubCourse Available')));
                         }
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            mainAxisExtent: 230,
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 20,
+                          ),
+                          itemCount: filteredSubCourses.length,
+                          itemBuilder: (ctx, index) {
+                            return InkWell(
+                              child: SubTutorialTileWidget(
+                                course: widget.course,
+                                isAdmin: widget.isAdmin,
+                                subCourse: filteredSubCourses,
+                                index: index,
+                                courseint: widget.index,
+                                subcourseImage: filteredSubCourses[index]
+                                    .subCourseThumbnailPath,
+                              ),
+                            );
+                          },
+                        );
                       },
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              // deleteCourse(courseNotifier.value[widget.id].id!);
-                              // Navigator.of(context).pop();
-                            },
-                            child: Text('delete')),
-                        ElevatedButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (ctx) => UpdateCourseDetails(CourseIndex: widget.index,courseImage: widget.courseImage,courseVideo: widget.introVideo,courseTitle: widget.tutorialTitle,courseDiscription: widget.description,)
-                              );
-                            },
-                            child: Text('update')),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => AddSubCourseThumbnail(
+                    widget.isAdmin == true
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              AddSubCourseButton(
+                                title: '+ add sub course',
+                                onPressed: () async {
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (ctx) => AddSubCourseThumbnail(
                                         indexCourse: widget.index,
                                         course: courseNotifier.value[widget.id],
                                         courseNamee: widget.tutorialTitle,
-                                      )));
-                            },
-                            child: Text('add sub course')),
-                      ],
-                    )
+                                      ),
+                                    ),
+                                  );
+                                  fetchSubCourses(widget.tutorialTitle);
+                                },
+                              ),
+                            ],
+                          )
+                        : const SizedBox(),
+                    const SizedBox(height: 15),
+                    widget.isAdmin == true
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              DeleteButton(
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (ctx) {
+                                        return AlertDialog(
+                                          content: Text(
+                                            'are you sure to remove this course',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'cancel',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )),
+                                            TextButton(
+                                                onPressed: () {
+                                                  deleteCourse(widget.id);
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text(
+                                                  'delete',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                )),
+                                          ],
+                                        );
+                                      });
+                                },
+                              ),
+                              UpdateButton(onpressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (ctx) => UpdateCourseDetails(
+                                          courseTitle: widget.tutorialTitle,
+                                          courseIndex: widget.index,
+                                          courseDiscription: widget.description,
+                                          courseImage: widget.courseImage,
+                                          courseVideo: widget.introVideo,
+                                        ));
+                              }),
+                            ],
+                          )
+                        : const SizedBox(),
                   ],
                 ),
               ),
@@ -215,5 +309,17 @@ class _AdminTutorialMainPageDetailsState
     );
   }
 
- 
+  bool enrolledLabel() {
+    print(widget.tutorialTitle);
+
+    print(widget.id);
+
+    for (var element in enrolledCourseNotifier.value) {
+      print(element.id);
+      if (element.id == widget.id) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

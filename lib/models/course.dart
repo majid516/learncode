@@ -8,7 +8,7 @@ class Course extends HiveObject {
   int? id;
 
   @HiveField(1)
-   String courseThumbnailPath;
+  String courseThumbnailPath;
 
   @HiveField(2)
   String courseTitle;
@@ -16,9 +16,8 @@ class Course extends HiveObject {
   @HiveField(3)
   final CourseDetails? courseDetails;
 
-
   Course({
-     this.id,
+    this.id,
     required this.courseThumbnailPath,
     required this.courseTitle,
     this.courseDetails,
@@ -28,10 +27,10 @@ class Course extends HiveObject {
 @HiveType(typeId: 1)
 class CourseDetails {
   @HiveField(0)
-   String courseIntroductionVideo;
+  String courseIntroductionVideo;
 
   @HiveField(1)
-   String courseDescription;
+  String courseDescription;
 
   @HiveField(2)
   final List<SubCourse>? subCourse;
@@ -44,12 +43,12 @@ class CourseDetails {
 }
 
 @HiveType(typeId: 2)
-class SubCourse extends HiveObject{
+class SubCourse extends HiveObject {
   @HiveField(0)
-   String subCourseThumbnailPath;
+  String subCourseThumbnailPath;
 
   @HiveField(1)
-   String subCourseTitle;
+  String subCourseTitle;
 
   @HiveField(2)
   final List<TutorialPlayList>? tutorialPlayList;
@@ -58,11 +57,11 @@ class SubCourse extends HiveObject{
   int? id;
 
   @HiveField(4)
-  String courseName;
+  int courseId;
 
   SubCourse({
     this.id,
-    required this.courseName,
+    required this.courseId,
     required this.subCourseThumbnailPath,
     required this.subCourseTitle,
     this.tutorialPlayList,
@@ -76,14 +75,18 @@ class TutorialPlayList {
 
   @HiveField(1)
   final SubCourseDetails? subCourseDetails;
-  
+
   @HiveField(2)
-  final String subCourseName;
-  
+  final int subCourseId;
+
+  @HiveField(3)
+  int playlistId;
+
   TutorialPlayList({
-    required this.subCourseName,
+    required this.subCourseId,
     required this.playListTitle,
     this.subCourseDetails,
+    required this.playlistId,
   });
 }
 
@@ -108,11 +111,16 @@ class QuestionNotes {
 
   @HiveField(1)
   final List<String> answers;
-  
-  @HiveField(2)
-  final String playListName;
 
-  QuestionNotes(this.playListName, {
+  @HiveField(2)
+  final int playlistId;
+
+  @HiveField(3)
+  int? noteId;
+
+  QuestionNotes({
+    required this.playlistId,
+    this.noteId,
     required this.questions,
     required this.answers,
   });

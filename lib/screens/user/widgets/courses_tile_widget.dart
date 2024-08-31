@@ -11,7 +11,7 @@ class TutorialTileWidget extends StatelessWidget {
   const TutorialTileWidget({
     super.key,
     required this.course,
-    required this.onPressed,
+    required this.onPressed, 
   });
 
   @override

@@ -26,8 +26,8 @@ class _AddNewCourseState extends State<AddNewCourse> {
   var currentIndex = 0;
 
   final _pages = [
-    AddCourseThumbnail(),
-    AddCourseDetails(),
+  const  AddCourseThumbnail(),
+   const AddCourseDetails(),
   ];
 
    void _submitCourse() async {
@@ -36,27 +36,18 @@ class _AddNewCourseState extends State<AddNewCourse> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(
+        title:const Text(
           'success',
           style: tutorialPageTitletextStyle,
         ),
-        content: Text('New Course Added Successfully'),
+        content:const Text('New Course Added Successfully'),
         actions: [
-          TextButton(onPressed: () {
-                        Navigator.of(ctx).pop();
-
-            currentIndex = 2;
-          }, child: Text('add sub course')),
-          Container(
-            height: 20,
-            width: 2,
-            color: blackColor,
-          ),
+          
           TextButton(onPressed: () {
                 widget.onCourseAdded();
 
             Navigator.of(ctx).pop();
-          }, child: Text('done')),
+          }, child:const Text('done',style: tutorialPageTitletextStyle,)),
         ],
       ),
     );
@@ -127,6 +118,7 @@ class _AddNewCourseState extends State<AddNewCourse> {
                           })
                         : SubmitButton(
                             onPressed: () {
+                              
                               _submitCourse();
                             },
                           ),

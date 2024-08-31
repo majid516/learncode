@@ -5,6 +5,7 @@ import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
 import 'package:learncode/screens/user/widgets/account_card.dart';
 
 class AdminAccountScreen extends StatelessWidget {
+  // final int subId;
   const AdminAccountScreen({
     super.key,
   });
@@ -76,27 +77,35 @@ class AdminAccountScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        AccountCard(
-                            titleText: 'search',
-                            icon:const Icon(
-                              Icons.search,
-                              color: themeTextColor,
-                            ),
-                            onPressed: () {}),
+                        
                         AccountCard(
                             titleText: 'sign out',
-                            icon:const Icon(
+                            icon: const Icon(
                               Icons.logout,
                               color: themeTextColor,
                             ),
                             onPressed: () {
-                              // Navigator.of(context).pushReplacement(
-                              //     MaterialPageRoute(
-                              //         builder: (ctx) =>const UserHomeScreen()));
+                              showDialog(context: context, builder: (ctx){return AlertDialog(
+                                title: Text('signout',style: tutorialPageTitletextStyle,),
+                                              content: Text('are you sure signout',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                                              actions: [
+                                                TextButton(onPressed: (){
+                                                  Navigator.of(context).pop();
+                                                }, child: Text('cancel',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+                                                 TextButton(onPressed: (){
+                                               Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (ctx) =>
+                                           UserHomeScreen()));
+
+                                                }, child: Text('signout',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+                                              ],
+                                            );});
+                              
                             }),
                         AccountCard(
                             titleText: 'about',
-                            icon:const Icon(
+                            icon: const Icon(
                               Icons.info_outline,
                               color: themeTextColor,
                             ),

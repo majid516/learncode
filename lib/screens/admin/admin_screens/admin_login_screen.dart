@@ -16,8 +16,8 @@ class _NamePageState extends State<NamePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
-  final adminName = '11';
-  final adminPassword = '11';
+  final adminName = 'majid';
+  final adminPassword = '1234';
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +134,7 @@ class _NamePageState extends State<NamePage> {
     final password = _passwordController.text.trim();
     if (name == adminName && password == adminPassword) {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) =>  AdminMainScreen()));
+          MaterialPageRoute(builder: (ctx) =>const AdminMainScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         behavior: SnackBarBehavior.floating,

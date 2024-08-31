@@ -101,7 +101,7 @@ class SubCourseAdapter extends TypeAdapter<SubCourse> {
     };
     return SubCourse(
       id: fields[3] as int?,
-      courseName: fields[4] as String,
+      courseId: fields[4] as int,
       subCourseThumbnailPath: fields[0] as String,
       subCourseTitle: fields[1] as String,
       tutorialPlayList: (fields[2] as List?)?.cast<TutorialPlayList>(),
@@ -121,7 +121,7 @@ class SubCourseAdapter extends TypeAdapter<SubCourse> {
       ..writeByte(3)
       ..write(obj.id)
       ..writeByte(4)
-      ..write(obj.courseName);
+      ..write(obj.courseId);
   }
 
   @override
@@ -146,22 +146,25 @@ class TutorialPlayListAdapter extends TypeAdapter<TutorialPlayList> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return TutorialPlayList(
-      subCourseName: fields[2] as String,
+      subCourseId: fields[2] as int,
       playListTitle: fields[0] as String,
       subCourseDetails: fields[1] as SubCourseDetails?,
+      playlistId: fields[3] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, TutorialPlayList obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.playListTitle)
       ..writeByte(1)
       ..write(obj.subCourseDetails)
       ..writeByte(2)
-      ..write(obj.subCourseName);
+      ..write(obj.subCourseId)
+      ..writeByte(3)
+      ..write(obj.playlistId);
   }
 
   @override
@@ -223,7 +226,8 @@ class QuestionNotesAdapter extends TypeAdapter<QuestionNotes> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return QuestionNotes(
-      fields[2] as String,
+      playlistId: fields[2] as int,
+      noteId: fields[3] as int?,
       questions: (fields[0] as List).cast<String>(),
       answers: (fields[1] as List).cast<String>(),
     );
@@ -232,13 +236,15 @@ class QuestionNotesAdapter extends TypeAdapter<QuestionNotes> {
   @override
   void write(BinaryWriter writer, QuestionNotes obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.questions)
       ..writeByte(1)
       ..write(obj.answers)
       ..writeByte(2)
-      ..write(obj.playListName);
+      ..write(obj.playlistId)
+      ..writeByte(3)
+      ..write(obj.noteId);
   }
 
   @override

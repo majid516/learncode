@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 
 class AddCourseDetails extends StatefulWidget {
-  AddCourseDetails({super.key});
+  const AddCourseDetails({super.key});
   static final courseDiscriptionController = TextEditingController();
-  static XFile? pickedVideo; // Use nullable type
+  static XFile? pickedVideo; 
 
   @override
   State<AddCourseDetails> createState() => _AddCourseDetailsState();
@@ -21,7 +20,7 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
 
   @override
   void dispose() {
-    _videoController?.dispose(); // Safely dispose if not null
+    _videoController?.dispose(); 
     super.dispose();
   }
 
@@ -95,17 +94,17 @@ void pickVideoFromGallery() async {
 
     final XFile? selectedVideo = await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
-      _videoController?.dispose(); // Dispose the previous controller if it exists
+      _videoController?.dispose(); 
 
       _videoController = VideoPlayerController.file(File(selectedVideo.path))
         ..initialize().then((_) {
           setState(() {
-            _videoController!.play(); // Play the video
+            _videoController!.play(); 
           });
         });
 
       setState(() {
-        AddCourseDetails.pickedVideo = selectedVideo; // Assign picked video
+        AddCourseDetails.pickedVideo = selectedVideo; 
       });
     }
   

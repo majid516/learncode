@@ -29,7 +29,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-       AdminViewScreeen(),
+      AdminViewScreeen(),
       AddNewCourse(
         onCourseAdded: goToFirstPage,
         submitFuntion: () {
@@ -41,18 +41,18 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               courseTitle: AddCourseThumbnail.courseTitleController.text,
               courseDetails: CourseDetails(
                 courseIntroductionVideo: AddCourseDetails.pickedVideo!.path,
-                courseDescription: AddCourseDetails.courseDiscriptionController.text,
+                courseDescription:
+                    AddCourseDetails.courseDiscriptionController.text,
               ),
             );
             addNewCourse(course);
           } else {
-            // Handle the case where required fields are missing
-            print('Please fill in all the required fields.');
+            //   print('Please fill in all the required fields.');
           }
           return null;
         },
       ),
-      AdminAccountScreen()
+      const AdminAccountScreen()
     ];
 
     return SafeArea(
@@ -114,4 +114,3 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
     );
   }
 }
-

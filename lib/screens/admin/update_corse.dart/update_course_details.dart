@@ -7,12 +7,12 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/screens/admin/add_course/add_course_details.dart';
-import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
 import 'package:video_player/video_player.dart';
 
+// ignore: must_be_immutable
 class UpdateCourseDetails extends StatefulWidget {
   String courseTitle;
-  int CourseIndex;
+  int courseIndex;
   String courseDiscription;
   String courseImage;
   String courseVideo;
@@ -20,7 +20,7 @@ class UpdateCourseDetails extends StatefulWidget {
   UpdateCourseDetails({
     super.key,
     required this.courseTitle,
-    required this.CourseIndex,
+    required this.courseIndex,
     required this.courseDiscription,
     required this.courseImage,
     required this.courseVideo,
@@ -46,10 +46,9 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
     titleController.text = widget.courseTitle;
     discriptionController.text = widget.courseDiscription;
 
-    // Initialize the video controller with the provided course video
     _videoController = VideoPlayerController.file(File(widget.courseVideo))
       ..initialize().then((_) {
-        setState(() {}); // Update UI when the controller is ready
+        setState(() {});
       });
   }
 
@@ -59,6 +58,11 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
       content: SingleChildScrollView(
         child: Column(
           children: [
+            const Text(
+              'Update',
+              style: tutorialPageTitletextStyle,
+            ),
+            const SizedBox(height: 20),
             Container(
               width: ScreenSize.widthMed * 0.75,
               height: 60,
@@ -80,9 +84,9 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
             ),
-            SizedBox(height: 20),
-            Text('data'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const Text('data'),
+            const SizedBox(height: 20),
             InkWell(
               onTap: pickImageFromGallery,
               child: Container(
@@ -91,15 +95,12 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(15),
-                  image: AddCourseThumbnail.thumbnail != null
-                      ? DecorationImage(
-                          image: FileImage(File(AddCourseThumbnail.thumbnail!)),
-                          fit: BoxFit.fill,
-                        )
-                      : DecorationImage(
-                          image: FileImage(File(widget.courseImage)),
-                          fit: BoxFit.fill,
-                        ),
+                  image: DecorationImage(
+                    image: UpdateCourseDetails.updatedthumbnail != null
+                        ? FileImage(File(UpdateCourseDetails.updatedthumbnail!))
+                        : FileImage(File(widget.courseImage)),
+                    fit: BoxFit.fill,
+                  ),
                 ),
               ),
             ),
@@ -126,9 +127,9 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
                       ),
               ),
             ),
-            SizedBox(height: 20),
-            Text('data'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const Text('data'),
+            const SizedBox(height: 20),
             Container(
               width: ScreenSize.widthMed * 0.75,
               height: 60,
@@ -150,18 +151,20 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
                     border: OutlineInputBorder(borderSide: BorderSide.none)),
               ),
             ),
-            SizedBox(height: 20),
-            Text('data'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            const Text('data'),
+            const SizedBox(height: 20),
             SubmitButton(
               onPressed: () {
+                final thumbnailToUpdate =
+                    UpdateCourseDetails.updatedthumbnail ?? widget.courseImage;
+
                 updateCouse(
-                  
-                  widget.CourseIndex,
+                  widget.courseIndex,
                   titleController.text,
                   discriptionController.text,
-                  UpdateCourseDetails.updatedthumbnail ?? '',
-                  widget.courseVideo,
+                  thumbnailToUpdate,
+                  AddCourseDetails.pickedVideo!.path,
                 );
                 Navigator.of(context).pop();
               },
@@ -173,7 +176,8 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
   }
 
   void pickVideoFromGallery() async {
-    final XFile? selectedVideo = await picker.pickVideo(source: ImageSource.gallery);
+    final XFile? selectedVideo =
+        await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
       _videoController.dispose(); // Dispose of the previous controller
 
@@ -191,7 +195,8 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
   }
 
   Future<void> pickImageFromGallery() async {
-    final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? selectedImage =
+        await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
       setState(() {
         UpdateCourseDetails.updatedthumbnail = selectedImage.path;

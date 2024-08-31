@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/screens/user/user_screens/favorite_page.dart';
+import 'package:learncode/screens/user/user_screens/my_enrolled_course.dart';
 
 import 'package:learncode/screens/user/widgets/account_card.dart';
 
@@ -49,7 +51,7 @@ class AccountPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 70,
-                        backgroundImage: userProfile,
+                       // backgroundImage: userProfile,
                       ),
                       const Positioned(
                           top: 110,
@@ -78,15 +80,15 @@ class AccountPage extends StatelessWidget {
                               offset: Offset(0, 1))
                         ]),
                     child: Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: 35.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 35.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            name,
+                            "name",
                             style: accountPagetextStyle,
                           ),
-                           Icon(
+                          const Icon(
                             Icons.edit,
                             color: themeTextColor,
                           )
@@ -100,52 +102,53 @@ class AccountPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      AccountCard(
-                          titleText: 'favourites',
-                          icon:const Icon(
-                            Icons.favorite,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {}),
+                     
                       AccountCard(
                           titleText: 'enrollment',
-                          icon:const Icon(
+                          icon: const Icon(
                             Icons.layers,
                             color: themeTextColor,
                           ),
-                          onPressed: () {}),
-                      AccountCard(
-                          titleText: 'watched ',
-                          icon:const Icon(
-                            Icons.remove_red_eye_outlined,
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> MyEnrolledCourses()));
+                          }),
+                           AccountCard(
+                          titleText: 'progress ',
+                          icon: const Icon(
+                            Icons.auto_graph,
                             color: themeTextColor,
                           ),
                           onPressed: () {}),
+                           AccountCard(
+                          titleText: 'favourites',
+                          icon: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> FavoritePage()));
+
+                          }),
+                     
                     ],
                   ),
-                const  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      AccountCard(
-                          titleText: 'search ',
-                          icon:const Icon(
-                            Icons.search,
-                            color: themeTextColor,
-                          ),
-                          onPressed: () {}),
+                      
                       AccountCard(
                           titleText: 'about',
-                          icon:const Icon(
+                          icon: const Icon(
                             Icons.info_outline,
                             color: themeTextColor,
                           ),
                           onPressed: () {}),
                       AccountCard(
                           titleText: 'report',
-                          icon:const Icon(
+                          icon: const Icon(
                             Icons.report_rounded,
                             color: themeTextColor,
                           ),

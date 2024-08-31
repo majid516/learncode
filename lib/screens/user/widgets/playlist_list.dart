@@ -5,11 +5,22 @@ import 'package:learncode/modules/admin_sub_tutorial_detail_pade.dart';
 
 class PlaylistTab extends StatelessWidget {
   final List<TutorialPlayList> playlists;
-final int courseIndex ;
-final int subCourseIndex;
-final String subTitle;
-final int playListIndex;
-  const PlaylistTab({super.key, required this.playlists, required this.courseIndex, required this.subCourseIndex, required this.subTitle, required this.playListIndex});
+  final int courseIndex;
+  final int subCourseIndex;
+  final String subTitle;
+  final int playListIndex;
+  final bool isAdmin;
+  final String subVideo;
+  const PlaylistTab({
+    super.key,
+    required this.playlists,
+    required this.courseIndex,
+    required this.subCourseIndex,
+    required this.subTitle,
+    required this.playListIndex,
+    required this.isAdmin,
+    required this.subVideo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +44,28 @@ final int playListIndex;
                 ]),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> AdminSubTutorialDetailPage(video:'asset/video/3195394-uhd_3840_2160_25fps.mp4', tutorialTitle: subTitle, courseindex: courseIndex, subCourseindex: subCourseIndex, playlistIndex: playListIndex,playListName: playlist.playListTitle,)));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => AdminSubTutorialDetailPage(
+                         playlist: playlist,
+                         playlistId: playlist.playlistId,
+                         subVideo: playlist.subCourseDetails!.subCourseVideo ,
+                         subcourseId: playlist.subCourseId,
+                          tutorialTitle: subTitle,
+                          courseindex: courseIndex,
+                          subCourseindex: subCourseIndex,
+                          playlistIndex: playListIndex,
+                          playListName: playlist.playListTitle,
+                          isAdmin: isAdmin,
+                        //  subVideo: subVideo,
+                        )));
               },
               child: Padding(
-                padding: const EdgeInsets.only(top: 11, left: 20),
+                padding: const EdgeInsets.only(top: 11, left: 10),
                 child: ListTile(
                   leading: const Icon(
                     Icons.slideshow,
                     color: themeTextColor,
-                    size: 45, 
+                    size: 45,
                   ),
                   title: Text(
                     playlist.playListTitle,

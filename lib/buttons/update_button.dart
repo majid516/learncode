@@ -3,12 +3,14 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 
 class UpdateButton extends StatelessWidget {
-  const UpdateButton({super.key});
+  final VoidCallback onpressed;
+  const UpdateButton({super.key, required this.onpressed});
 
   @override
   Widget build(BuildContext context) {
     return  ElevatedButton(
-      onPressed: () {},
+      onPressed:  onpressed
+      ,
       
       style: ElevatedButton.styleFrom(
         fixedSize: Size(ScreenSize.widthMed*0.35, 50),

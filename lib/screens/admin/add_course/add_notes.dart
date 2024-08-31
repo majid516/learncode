@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 
 class AddNotes extends StatefulWidget {
-  final String playListName;
+  final int playListId;
 
-  AddNotes({super.key, required this.playListName});
+  const AddNotes({super.key, required this.playListId});
 
   static Map<String, String> questionNotes = {};
 
@@ -19,25 +20,13 @@ class AddNotes extends StatefulWidget {
   State<AddNotes> createState() => _AddNotesState();
 }
 
+
 class _AddNotesState extends State<AddNotes> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
-    // Load any existing notes for this playlist
-    _loadExistingNotes();
-  }
-
-  Future<void> _loadExistingNotes() async {
-    final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
-    final existingNotes = noteBox.values.where((note) => note.playListName == widget.playListName).toList();
-    if (existingNotes.isNotEmpty) {
-      setState(() {
-        AddNotes.questionNotes = Map.fromIterables(
-          existingNotes.first.questions,
-          existingNotes.first.answers,
-        );
-      });
-    }
   }
 
   void addNote() {
@@ -59,16 +48,15 @@ class _AddNotesState extends State<AddNotes> {
     final answers = AddNotes.questionNotes.values.toList();
 
     final note = QuestionNotes(
-      widget.playListName,
+      playlistId: widget.playListId,
       questions: questions,
       answers: answers,
     );
-
     final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
     await noteBox.add(note);
-
-    // Update the notifier with the latest data
-    final notes = noteBox.values.where((n) => n.playListName == widget.playListName).toList();
+ 
+    final notes =
+        noteBox.values.where((n) => n.playlistId == widget.playListId).toList();
     questionNoteNotifier.value = notes;
 
     setState(() {
@@ -79,45 +67,34 @@ class _AddNotesState extends State<AddNotes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        width: ScreenSize.widthMed,
-        height: ScreenSize.heightMed,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTextField(AddNotes.questionController, 'Enter Question'),
-            SizedBox(height: ScreenSize.heightMed * 0.02),
-            const Text('Add Question Note', style: addTutorialPagestyle),
-            SizedBox(height: ScreenSize.heightMed * 0.03),
-            _buildTextField(AddNotes.answerController, 'Enter Answer'),
-            SizedBox(height: ScreenSize.heightMed * 0.02),
-            const Text('Add Answer Note', style: addTutorialPagestyle),
-            Expanded(
-              child: ListView.builder(
-                itemCount: AddNotes.questionNotes.length,
-                itemBuilder: (context, index) {
-                  String question = AddNotes.questionNotes.keys.elementAt(index);
-                  String answer = AddNotes.questionNotes[question]!;
-                  return ListTile(
-                    title: Text(question),
-                    subtitle: Text(answer),
-                  );
-                },
+      body: Form(
+        key: _formKey,
+        child: SizedBox(
+          width: ScreenSize.widthMed,
+          height: ScreenSize.heightMed,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildTextField(AddNotes.questionController, 'Enter Question'),
+              SizedBox(height: ScreenSize.heightMed * 0.02),
+              const Text('Add Question Note', style: addTutorialPagestyle),
+              SizedBox(height: ScreenSize.heightMed * 0.03),
+              _buildTextField(AddNotes.answerController, 'Enter Answer'),
+              SizedBox(height: ScreenSize.heightMed * 0.02),
+              const Text('Add Answer Note', style: addTutorialPagestyle),
+              const SizedBox(
+                height: 30,
               ),
-            ),
-            // ElevatedButton(
-            //   onPressed: addNote,
-            //   child: const Text('Add Another Note'),
-            // ),
-            ElevatedButton(
-              onPressed: () async {
-               addNote();
-                await addNotesToDatabase();
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save Notes'),
-            ),
-          ],
+              SubmitButton(onPressed: () async {
+                if (_formKey.currentState?.validate() ?? false) {
+                  addNote();
+                  await addNotesToDatabase();
+                  Navigator.of(context).pop();
+                }
+              }),
+            ],
+          ),
         ),
       ),
     );
@@ -142,8 +119,14 @@ class _AddNotesState extends State<AddNotes> {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-            border: OutlineInputBorder(borderSide: BorderSide.none),
+            border: const OutlineInputBorder(borderSide: BorderSide.none),
             hintText: hintText),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $hintText';
+          }
+          return null;
+        },
       ),
     );
   }

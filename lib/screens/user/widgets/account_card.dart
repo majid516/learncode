@@ -6,19 +6,23 @@ class AccountCard extends StatelessWidget {
   final String titleText;
   final Icon icon;
   final VoidCallback onPressed;
-  const AccountCard({super.key, required this.titleText, required this.icon, required this.onPressed});
+  const AccountCard(
+      {super.key,
+      required this.titleText,
+      required this.icon,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
       child: SizedBox(
-        width: ScreenSize.widthMed*0.27,
-        height: ScreenSize.widthMed*0.27,
+        width: ScreenSize.widthMed * 0.27,
+        height: ScreenSize.widthMed * 0.27,
         child: Card(
           elevation: 4,
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -26,9 +30,11 @@ class AccountCard extends StatelessWidget {
                 CircleAvatar(
                   backgroundColor: whiteColor,
                   radius: 20,
-                 child: icon,
+                  child: icon,
                 ),
-                SizedBox(height: 3,),
+                const SizedBox(
+                  height: 3,
+                ),
                 Text(titleText)
               ],
             ),

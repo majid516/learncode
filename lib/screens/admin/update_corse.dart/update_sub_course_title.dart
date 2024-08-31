@@ -6,15 +6,18 @@ import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
-import 'package:hive/hive.dart';
-import 'package:learncode/models/course.dart';
 
 class UpdateSubCourseTitle extends StatefulWidget {
   final String subcourseImage;
   final String subTitle;
   final int subIndex;
 
-  UpdateSubCourseTitle({super.key, required this.subcourseImage, required this.subTitle, required this.subIndex,});
+  const UpdateSubCourseTitle({
+    super.key,
+    required this.subcourseImage,
+    required this.subTitle,
+    required this.subIndex,
+  });
 
   @override
   State<UpdateSubCourseTitle> createState() => _UpdateSubCourseTitleState();
@@ -53,7 +56,7 @@ class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
           SizedBox(height: ScreenSize.heightMed * 0.03),
           const Text(
             'Add Sub Course Thumbnail',
-            // style: addTutorialPageStyle,
+            style: addTutorialPagestyle,
           ),
           SizedBox(height: ScreenSize.heightMed * 0.05),
           Container(
@@ -79,10 +82,19 @@ class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
               ),
             ),
           ),
-          SizedBox(height: ScreenSize.heightMed * 0.03),
+          SizedBox(height: ScreenSize.heightMed * 0.02),
+          const Text(
+            'Add Sub Course Thumbnail',
+            style: addTutorialPagestyle,
+          ),
+          SizedBox(height: ScreenSize.heightMed * 0.04),
           SubmitButton(onPressed: () {
             final thumbnailToUpdate = updatedThumbnail ?? widget.subcourseImage;
-            updateSubCourseTitle(widget.subIndex, thumbnailToUpdate, subTitleController.text,);
+            updateSubCourseTitle(
+              widget.subIndex,
+              thumbnailToUpdate,
+              subTitleController.text,
+            );
             Navigator.of(context).pop();
           }),
         ],
@@ -91,7 +103,8 @@ class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
   }
 
   Future<void> pickImageFromGallery() async {
-    final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? selectedImage =
+        await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
       setState(() {
         updatedThumbnail = selectedImage.path;
