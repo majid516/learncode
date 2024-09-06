@@ -31,8 +31,35 @@ class _AddNewCourseState extends State<AddNewCourse> {
   ];
 
    void _submitCourse() async {
+
+void showErrorDialog(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      backgroundColor: const Color.fromARGB(255, 206, 34, 22),
+      margin:const EdgeInsets.all(12),
+      behavior: SnackBarBehavior.floating,
+      content:Text(message,style:const TextStyle(color: whiteColor),))
+  );
+}
+  if (AddCourseThumbnail.courseTitleController.text.isEmpty) {
+    showErrorDialog('title is requiered');
+    return;
+  }
+  if (AddCourseDetails.courseDiscriptionController.text.isEmpty) {
+    showErrorDialog('description is requiered');
+    return;
+  }
+  if (AddCourseThumbnail.thumbnail == null) {
+    showErrorDialog('thumbnail is requiered');
+    return;
+  }
+   if (AddCourseDetails.pickedVideo == null) {
+    showErrorDialog('video is requiered');
+    return;
+  }
+
     widget.submitFuntion();
-  
+   
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -51,12 +78,19 @@ class _AddNewCourseState extends State<AddNewCourse> {
         ],
       ),
     );
-
+   
    
     controller.jumpToPage(0);
     setState(() {
       currentIndex = 0;
     });
+    AddCourseDetails.courseDiscriptionController.clear();
+   AddCourseThumbnail.courseTitleController.clear();
+   setState(() {
+     AddCourseThumbnail.thumbnail = null;
+     AddCourseDetails.pickedVideo == null;
+     
+   });
   }
 
   @override

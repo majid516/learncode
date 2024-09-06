@@ -127,11 +127,12 @@ class _UserPlayListPageState extends State<UserPlayListPage> {
               child: ValueListenableBuilder<List<TutorialPlayList>>(
                 valueListenable: playlistNotifier,
                 builder: (ctx, playlists, child) {
+                  
                   final filteredPlaylists = playlists
                       .where((playlist) =>
                           playlist.subCourseId == widget.subCourseId)
                       .toList();
-
+                 
                   return PlaylistTab(
                     subVideo: widget.subVideo,
                     isAdmin: widget.isAdmin,

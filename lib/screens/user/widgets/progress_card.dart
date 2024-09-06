@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/database/database_funtions.dart';
 
-class ProgressCard extends StatelessWidget {
-  const ProgressCard({super.key});
+class ProgressCard extends StatefulWidget {
+   ProgressCard({super.key, });
+  int a = playlistNotifier.value.length;
+  @override
+  State<ProgressCard> createState() => _ProgressCardState();
+}
 
+class _ProgressCardState extends State<ProgressCard> {
   @override
   Widget build(BuildContext context) {
+    fechingPlaylist();
     return Padding(
-      padding: const EdgeInsetsDirectional.only(top: 20),
+      padding:  EdgeInsetsDirectional.only(top: 20),
       child: Center(
         child: Container(
           width: ScreenSize.widthMed * 0.9,
@@ -25,18 +32,18 @@ class ProgressCard extends StatelessWidget {
             ],
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 40, left: 30),
+            padding:  EdgeInsets.only(top: 40, left: 30),
             child: Row(
               children: [
                 Column(
                   children: [
                     SizedBox(
-                      width: ScreenSize.widthMed * 0.25,
+                       width: ScreenSize.widthMed * 0.25,
                       height: ScreenSize.widthMed * 0.25,
-                      child: const CircularProgressIndicator(
+                      child:const  CircularProgressIndicator(
                         strokeWidth: 15,
                         strokeCap: StrokeCap.round,
-                        value: .4,
+                        value:0.4,
                         color: themeTextColor,
                         backgroundColor: homeColor,
                       ),
@@ -61,13 +68,13 @@ class ProgressCard extends StatelessWidget {
                         width: ScreenSize.widthMed * 0.42,
                         child: LinearProgressIndicator(
                           borderRadius: BorderRadius.circular(15),
-                          value: 0.5,
+                           value:1/1,
                           backgroundColor: Colors.grey[300],
                           color: Colors.red,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text('Web Designing'),
+                       Text('3333'),
                       const SizedBox(height: 15),
                       SizedBox(
                         height: 5,
@@ -80,22 +87,23 @@ class ProgressCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text('Mobile Devolopment'),
-                      const SizedBox(height: 15),
-                      SizedBox(
-                        height: 5,
-                        width: ScreenSize.widthMed * 0.42,
-                        child: LinearProgressIndicator(
-                          value: 0.5,
-                          borderRadius: BorderRadius.circular(15),
-                          backgroundColor: Colors.grey[300],
-                          color: Colors.red,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text('MERN stack'),
-                                            const SizedBox(height: 20),
-                      TextButton(onPressed: (){}, child:const Text('see more',style: TextStyle(fontWeight: FontWeight.w600,color: themeTextColor),))
+                       Text('enrolleitle'),
+                      // const SizedBox(height: 15),
+                      // SizedBox(
+                      //   height: 5,
+                      //   width: ScreenSize.widthMed * 0.42,
+                      //   child: LinearProgressIndicator(
+                      //     value: 0.5,
+                      //     borderRadius: BorderRadius.circular(15),
+                      //     backgroundColor: Colors.grey[300],
+                      //     color: Colors.red,
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 10),
+                      //Text(enrolledCourseNotifier.value[2].courseThumbnailPath),
+                                             SizedBox(height: ScreenSize.heightMed*0.01),
+                      TextButton(onPressed: (){
+                      }, child:const Text('see more',style: TextStyle(fontWeight: FontWeight.w600,color: themeTextColor),))
                     ],
                   ),
                 )

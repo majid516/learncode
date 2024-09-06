@@ -8,7 +8,7 @@ import 'package:video_player/video_player.dart';
 class AddCourseDetails extends StatefulWidget {
   const AddCourseDetails({super.key});
   static final courseDiscriptionController = TextEditingController();
-  static XFile? pickedVideo; 
+  static XFile? pickedVideo;
 
   @override
   State<AddCourseDetails> createState() => _AddCourseDetailsState();
@@ -20,7 +20,7 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
 
   @override
   void dispose() {
-    _videoController?.dispose(); 
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -43,7 +43,8 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
                   color: Colors.grey[200],
                 ),
                 child: AddCourseDetails.pickedVideo != null
-                    ? _videoController != null && _videoController!.value.isInitialized
+                    ? _videoController != null &&
+                            _videoController!.value.isInitialized
                         ? AspectRatio(
                             aspectRatio: _videoController!.value.aspectRatio,
                             child: VideoPlayer(_videoController!),
@@ -55,7 +56,8 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
               ),
             ),
             SizedBox(height: ScreenSize.heightMed * 0.02),
-            const Text('add course Indrodution video', style: addTutorialPagestyle),
+            const Text('add course Indrodution video',
+                style: addTutorialPagestyle),
             SizedBox(height: ScreenSize.heightMed * 0.04),
             Container(
               width: ScreenSize.widthMed * 0.8,
@@ -75,7 +77,8 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
               child: TextFormField(
                 controller: AddCourseDetails.courseDiscriptionController,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderSide: BorderSide.none)),
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                ),
               ),
             ),
             SizedBox(height: ScreenSize.heightMed * 0.02),
@@ -87,26 +90,22 @@ class _AddCourseDetailsState extends State<AddCourseDetails> {
     );
   }
 
-
-
-
-void pickVideoFromGallery() async {
-
-    final XFile? selectedVideo = await picker.pickVideo(source: ImageSource.gallery);
+  void pickVideoFromGallery() async {
+    final XFile? selectedVideo =
+        await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
-      _videoController?.dispose(); 
+      _videoController?.dispose();
 
       _videoController = VideoPlayerController.file(File(selectedVideo.path))
         ..initialize().then((_) {
           setState(() {
-            _videoController!.play(); 
+            _videoController!.play();
           });
         });
 
       setState(() {
-        AddCourseDetails.pickedVideo = selectedVideo; 
+        AddCourseDetails.pickedVideo = selectedVideo;
       });
     }
-  
-
-}}
+  }
+}

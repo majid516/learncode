@@ -5,7 +5,6 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/modules/admin_course_details_main_page.dart';
-import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
 
 class MyEnrolledCourses extends StatefulWidget {
   const MyEnrolledCourses({super.key});
@@ -18,13 +17,12 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
   @override
   void initState() {
     getAllEnrolledCourse();
-    // TODO: implement initState
     super.initState();
   }
   @override
 
   Widget build(BuildContext context) {
-     getAllEnrolledCourse();
+   //  getAllEnrolledCourse();
     return SafeArea(
       child: Scaffold(
       backgroundColor: whiteColor,
@@ -46,7 +44,7 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                     'My Enrolled Course',
                     style: tutorialPageTitletextStyle,
                   ),
-                  SizedBox(width: 30,)
+                 const SizedBox(width: 30,)
                 ],
               ),
             ),
@@ -54,7 +52,9 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
               child: ValueListenableBuilder(
                 valueListenable: enrolledCourseNotifier,
                 builder: (context, courses, child) {
-                  return ListView.builder(
+                return  enrolledCourseNotifier.value.isEmpty ?
+                const  Center(child: Text('Enrolled Course Not Availabe')):
+                   ListView.builder(
                     padding: const EdgeInsets.all(10.0),
                     itemCount: courses.length,
                     itemBuilder: (ctx, index) {
@@ -102,7 +102,7 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                                                   ),
                                                   fit: BoxFit.fill)),
                                         ),
-                                        SizedBox(
+                                      const  SizedBox(
                                           width: 10,
                                         ),
                                         Text(
@@ -120,7 +120,7 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                                         decoration: BoxDecoration(
                                             gradient: themePurple,
                                             borderRadius: BorderRadius.circular(10)),
-                                        child: Center(
+                                        child:const Center(
                                             child: Text(
                                           'enrolled',
                                           style: TextStyle(
@@ -131,24 +131,26 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                                       IconButton(
                                           onPressed: () {
                                             showDialog(context: context, builder: (ctx){return AlertDialog(
-                                              content: Text('are you sure to remove this course',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
+                                              content:const Text('are you sure to remove this course',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),),
                                               actions: [
                                                 TextButton(onPressed: (){
                                                   Navigator.of(context).pop();
-                                                }, child: Text('cancel',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+                                                }, child:const Text('cancel',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+
+                                                
                                                  TextButton(onPressed: (){
                                                   deleteEnrolledCourse(courseData.id!);
                                                   Navigator.of(context).pop();
 
-                                                }, child: Text('remove',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
+                                                }, child:const Text('remove',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),)),
                                               ],
                                             );});
 
                                           },
-                                          icon: Icon(
+                                          icon:const Icon(
                                             Icons.delete,
                                             color:
-                                                const Color.fromARGB(255, 205, 28, 15),
+                                                 Color.fromARGB(255, 205, 28, 15),
                                           )),
                                     ],
                                   )

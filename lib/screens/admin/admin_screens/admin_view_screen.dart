@@ -22,14 +22,11 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
 
   @override
   void initState() {
-
     filteredCourse = courseNotifier.value;
 
     _searchController.addListener(() {
       filterCourse(_searchController.text);
-      
     });
-    // TODO: implement initState
     super.initState();
   }
 
@@ -78,7 +75,7 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
                         AnimSearchBar(
                             color: Colors.transparent,
                             boxShadow: false,
-                            prefixIcon: Icon(
+                            prefixIcon:const Icon(
                               Icons.search,
                               color: themeTextColor,
                             ),
@@ -98,57 +95,7 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
               ),
             ),
           ),
-          // ValueListenableBuilder<List<Course>>(
-          //   valueListenable: courseNotifier,
-          //   builder: (context, courses, child) {
-              
-          //     final displayList =
-          //         filteredCourse.isEmpty && _searchController.text.isEmpty
-          //             ? courses
-          //             : filteredCourse;
-          //             if (courses.isEmpty) {
-          //             return  Text("No Available Courses");
-          //             }else{
-          //     return SliverGrid(
-          //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          //         crossAxisCount: 2,
-          //         mainAxisSpacing: 30,
-          //         crossAxisSpacing: 10,
-          //       ),
-          //       delegate: SliverChildBuilderDelegate(
-          //         (ctx, index) {
-          //           final courseData = displayList[index];
-          //           return Padding(
-          //             padding: const EdgeInsets.only(top: 25.0),
-          //             child: TutorialTileWidget(
-          //               course: courseData, // Pass the course data here
-          //               onPressed: () {
-          //                 Navigator.of(context).push(
-          //                   MaterialPageRoute(
-          //                     builder: (ctx) => AdminTutorialMainPageDetails(
-          //                       course: courseData,
-          //                       isAdmin: true,
-          //                       courseImage: courseData.courseThumbnailPath,
-          //                       index: index,
-          //                       id: courseData.id!,
-          //                       introVideo: courseData
-          //                           .courseDetails!.courseIntroductionVideo,
-          //                       tutorialTitle: courseData.courseTitle,
-          //                       description: courseData
-          //                               .courseDetails?.courseDescription ??
-          //                           'Description',
-          //                     ),
-          //                   ),
-          //                 );
-          //               },
-          //             ),
-          //           );
-          //         },
-          //         childCount: filteredCourse.length,
-          //       ),
-          //     );}
-          //   },
-          // ),
+
           ValueListenableBuilder<List<Course>>(
             valueListenable: courseNotifier,
             builder: (context, courses, child) {
@@ -158,13 +105,32 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
                       : filteredCourse;
 
               if (courses.isEmpty) {
-                return const SliverToBoxAdapter(
+                return SliverToBoxAdapter(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Center(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: SizedBox(
+                      height: ScreenSize.heightMed * 0.4,
+                      child: const Center(
+                        child: Text(
+                          "No Available Courses",
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              } else if (displayList.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: ScreenSize.widthMed,
+                    height: ScreenSize.heightMed*0.6 ,
+                    child:const Center(
                       child: Text(
-                        "No Available Courses",
-                        style: TextStyle(fontSize: 18),
+                        'No items found',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),

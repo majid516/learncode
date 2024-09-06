@@ -5,12 +5,14 @@ import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/database/user_progress_db.dart';
 import 'package:learncode/models/course.dart';
 import 'package:video_player/video_player.dart';
 
 class AddPlaylistTitle extends StatefulWidget {
   final int? subCourseId;
   final int playlistId;
+  final int courseId;
 
   static List<TutorialPlayList> playlistList = [];
   static VideoPlayerController? videoControllers;
@@ -18,7 +20,7 @@ class AddPlaylistTitle extends StatefulWidget {
   const AddPlaylistTitle({
     super.key,
     this.subCourseId,
-    required this.playlistId,
+    required this.playlistId, required this.courseId,
   });
 
   static XFile? pickedVideo;
@@ -138,6 +140,7 @@ class _AddPlaylistTitleState extends State<AddPlaylistTitle> {
                         ),
                       );
                       await addPlayList(data);
+                      await updatePlaylistCount(widget.courseId, 1);
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pop();
                     } else {
@@ -161,7 +164,6 @@ class _AddPlaylistTitleState extends State<AddPlaylistTitle> {
     final XFile? selectedVideo =
         await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
-      // Dispose the previous controller if it exists
       if (AddPlaylistTitle.videoControllers != null) {
         AddPlaylistTitle.videoControllers!.dispose();
         AddPlaylistTitle.videoControllers = null;

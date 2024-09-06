@@ -45,7 +45,9 @@ class AppbarWidget extends StatelessWidget {
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (ctx) => AccountPage(
-                              name: 'name', userProfile:FileImage(File('asset/image/userImage.jpeg')) )));
+                            name: 'as',
+                             // name: name, userProfile:userProfile!
+                              )));
                     },
                     icon: const Icon(
                       Icons.menu,

@@ -11,10 +11,10 @@ import 'package:learncode/screens/user/widgets/progress_card.dart';
 
 class UserHomeScreen extends StatefulWidget {
   final String? name;
-
+  
   final ImageProvider<Object>? userProfile;
 
-  UserHomeScreen({
+  const UserHomeScreen({
     super.key,
     this.name,
     this.userProfile,
@@ -25,7 +25,6 @@ class UserHomeScreen extends StatefulWidget {
 }
 
 class _UserHomeScreenState extends State<UserHomeScreen> {
-  // final int subCourseId;
   final _searchController = TextEditingController();
 
   List<Course> filterdList = [];
@@ -37,7 +36,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     _searchController.addListener(() {
       filterCourse(_searchController.text);
     });
-    // TODO: implement initState
     super.initState();
   }
 
@@ -88,7 +86,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         style: tutorialPageTitletextStyle,
                       ),
                     ),
-                    const ProgressCard(),
+                      ProgressCard(
+                    
+                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
@@ -101,7 +101,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           AnimSearchBar(
                               color: Colors.transparent,
                               boxShadow: false,
-                              prefixIcon: Icon(
+                              prefixIcon:const Icon(
                                 Icons.search,
                                 color: themeTextColor,
                               ),
@@ -127,6 +127,23 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     filterdList.isEmpty && _searchController.text.isEmpty
                         ? courses
                         : filterdList;
+                      if(displayList.isEmpty){
+                       return SliverToBoxAdapter(
+        child: SizedBox(
+          width: ScreenSize.widthMed,
+          height: ScreenSize.widthMed * 0.4,
+          child:const Center(
+            child: Text(
+              'No items found',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ),
+      );
+                      }else{
                 return SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -165,6 +182,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     childCount: displayList.length,
                   ),
                 );
+              }
               },
             ),
           ],

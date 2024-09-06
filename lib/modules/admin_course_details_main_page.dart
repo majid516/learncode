@@ -1,5 +1,5 @@
+import 'dart:developer';
 import 'dart:io';
-
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -39,7 +39,7 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
     this.isAdmin = false,
     required this.course,
   });
-
+    static int playlistCount = 0;
   @override
   State<AdminTutorialMainPageDetails> createState() =>
       _AdminTutorialMainPageDetailsState();
@@ -47,13 +47,17 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
 
 class _AdminTutorialMainPageDetailsState
     extends State<AdminTutorialMainPageDetails> {
+  
   late FlickManager flickManager;
   ValueNotifier<List<SubCourse>> filteredSubCoursesNotifier = ValueNotifier([]);
 
   @override
   void initState() {
+    getAllEnrolledCourse();
+
     super.initState();
     flickManager = FlickManager(
+      autoPlay: false,
       videoPlayerController: VideoPlayerController.file(File(widget.introVideo))
         ..initialize().then((_) {
           setState(() {});
@@ -61,7 +65,8 @@ class _AdminTutorialMainPageDetailsState
           return null;
         }),
     );
-
+   filterPlaylist(widget.id);
+   
     fetchSubCourses(widget.tutorialTitle);
   }
 
@@ -80,7 +85,7 @@ class _AdminTutorialMainPageDetailsState
         .toList();
 
     // print(
-    //     'Filtered SubCourses length: ${filteredSubCoursesNotifier.value.length}');
+    // 'Filtered SubCourses length: ${filteredSubCoursesNotifier.value.length}');
     filteredSubCoursesNotifier.value
         .forEach((subCourse) => print(subCourse.subCourseTitle));
   }
@@ -92,11 +97,9 @@ class _AdminTutorialMainPageDetailsState
 
   @override
   Widget build(BuildContext context) {
-    final enrolledProvider = EnrolledCourseProvider.of(context);
     getAllSubCourses();
     fechingSubcourse();
-    getAllEnrolledCourse();
-
+   final enrolledProvider = EnrolledCourseProvider.of(context);
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -121,17 +124,15 @@ class _AdminTutorialMainPageDetailsState
                     ),
                     widget.isAdmin
                         ? const SizedBox()
-                        : enrolledLabel()
-                            // : enrolledCourseNotifier.value.contains(widget.id)
-                            // : enrolledCourseNotifier.value.any((value)=> value.id == widget.id)
-                            // enrolledProvider.isExist(widget.course)
+                        : enrolledProvider.isExist(widget.course)
+                           
                             ? Container(
                                 width: ScreenSize.widthMed * 0.2,
                                 height: 30,
                                 decoration: BoxDecoration(
                                     gradient: themePurple,
                                     borderRadius: BorderRadius.circular(10)),
-                                child: Center(
+                                child:const Center(
                                     child: Text(
                                   'enrolled',
                                   style: TextStyle(
@@ -143,6 +144,8 @@ class _AdminTutorialMainPageDetailsState
                                 showDialog(
                                     context: context,
                                     builder: (ctx) => EnrollingAlert(
+                                          progressPoint: 2,
+                                          totalPoint: AdminTutorialMainPageDetails.playlistCount,
                                           courseId: widget.id,
                                           course: widget.course,
                                         ));
@@ -179,6 +182,7 @@ class _AdminTutorialMainPageDetailsState
                     ValueListenableBuilder<List<SubCourse>>(
                       valueListenable: filteredSubCoursesNotifier,
                       builder: (context, filteredSubCourses, child) {
+                       
                         if (filteredSubCourses.isEmpty) {
                           return SizedBox(
                               width: ScreenSize.widthMed,
@@ -200,6 +204,7 @@ class _AdminTutorialMainPageDetailsState
                           itemBuilder: (ctx, index) {
                             return InkWell(
                               child: SubTutorialTileWidget(
+                                courseId: widget.id,
                                 course: widget.course,
                                 isAdmin: widget.isAdmin,
                                 subCourse: filteredSubCourses,
@@ -249,7 +254,7 @@ class _AdminTutorialMainPageDetailsState
                                       context: context,
                                       builder: (ctx) {
                                         return AlertDialog(
-                                          content: Text(
+                                          content:const Text(
                                             'are you sure to remove this course',
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -260,7 +265,7 @@ class _AdminTutorialMainPageDetailsState
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text(
+                                                child:const Text(
                                                   'cancel',
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -273,7 +278,7 @@ class _AdminTutorialMainPageDetailsState
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                 },
-                                                child: Text(
+                                                child:const Text(
                                                   'delete',
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -298,7 +303,12 @@ class _AdminTutorialMainPageDetailsState
                               }),
                             ],
                           )
-                        : const SizedBox(),
+                        :  ElevatedButton(
+                         child: Text('data'),
+                         onPressed: () {
+                          filterPlaylist(widget.id);
+                         },
+                        ),
                   ],
                 ),
               ),
@@ -308,18 +318,25 @@ class _AdminTutorialMainPageDetailsState
       ),
     );
   }
-
-  bool enrolledLabel() {
-    print(widget.tutorialTitle);
-
-    print(widget.id);
-
-    for (var element in enrolledCourseNotifier.value) {
-      print(element.id);
-      if (element.id == widget.id) {
-        return true;
-      }
+void filterPlaylist(int courseId) {
+ int count = 0;
+  List<SubCourse> subCourses = subCourseNotifier.value.where((sub) => sub.courseId == courseId).toList();
+  log('SubCourses found: ${subCourses.length} for Course ID: $courseId');
+  for (var subCourse in subCourses) {
+    log('SubCourse ID: ${subCourse.courseId}, SubCourse Title: ${subCourse.subCourseTitle}');
+    if (subCourse.tutorialPlayList.isNotEmpty) {
+      log('Playlist found with length: ${subCourse.tutorialPlayList.length}');
+     count += subCourse.tutorialPlayList.length;
+    } else {
+      log('No playlists found for SubCourse: ${subCourse.subCourseTitle}');
     }
-    return false;
   }
+  log('Total Playlists under course $courseId: ${count}');
+  AdminTutorialMainPageDetails.playlistCount = count;
+  print('count === ${AdminTutorialMainPageDetails.playlistCount}');
 }
+
+
+}
+
+

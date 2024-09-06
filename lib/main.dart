@@ -4,8 +4,10 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/models/user_details.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/models/user_progress.dart';
 import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
 import 'package:learncode/screens/user/provider/favourite_provider.dart';
+import 'package:learncode/screens/user/spash_screen.dart';
 import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +36,9 @@ Future<void> main() async{
   if (!Hive.isAdapterRegistered(QuestionNotesAdapter().typeId)) {
     Hive.registerAdapter(QuestionNotesAdapter());
   }
+  if (!Hive.isAdapterRegistered(UserProgressAdapter().typeId)) {
+    Hive.registerAdapter(UserProgressAdapter());
+  }
 
   runApp(const LearnCode());
 }
@@ -57,7 +62,7 @@ class LearnCode extends StatelessWidget {
         ),
        home: UserHomeScreen(),
       // home:const AdminMainScreen(),
-      //home:const SplashScreenPage() ,
+     // home:const SplashScreenPage() ,
       ),
     );
   }

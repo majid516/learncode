@@ -37,7 +37,6 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
 
   @override
   Widget build(BuildContext context) {
-    // fechinSubcourse();
     return Scaffold(
       appBar: AppBar(
           title: const Text(
@@ -78,7 +77,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               const Text(
                 'Add Sub Course Thumbnail',
                 style:
-                    addTutorialPagestyle, // Fixed typo here from 'addTutorialPagestyle' to 'addTutorialPageStyle'
+                    addTutorialPagestyle, 
               ),
               SizedBox(height: ScreenSize.heightMed * 0.05),
               Container(
@@ -99,7 +98,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
                 child: TextFormField(
                  
                   controller:
-                      subCourseTitleController, // Fixed typo here as well
+                      subCourseTitleController, 
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide.none),
                     hintText: 'Enter Sub Course Title',
@@ -109,7 +108,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               SizedBox(height: ScreenSize.heightMed * 0.03),
               const Text(
                 'Add Sub Course Title',
-                style: addTutorialPagestyle, // Fixed typo here
+                style: addTutorialPagestyle,
               ),
               SizedBox(height: ScreenSize.heightMed * 0.12),
               SubmitButton(
@@ -118,12 +117,10 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
                       subCourseTitleController.text.isNotEmpty) {
                     var subCourse = SubCourse(
                       courseId: widget.course.id!,
-                      //courseName: widget.courseNamee,
                       subCourseThumbnailPath: thumbnail!,
                       subCourseTitle: subCourseTitleController.text,
                     );
                     addNewSubCourse(subCourse);
-                    //  print(widget.courseNamee);
                     Navigator.of(context).pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

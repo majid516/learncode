@@ -5,21 +5,22 @@ import 'package:learncode/models/course.dart';
 import 'package:provider/provider.dart';
 
 class FavouriteProvider extends ChangeNotifier {
-  final List<TutorialPlayList> _favoutitePlaylist = [];
-  List<TutorialPlayList> get favouritePlaylist => _favoutitePlaylist;
+ // final List<TutorialPlayList> _favoutitePlaylist = [];
+  //List<TutorialPlayList> get favouritePlaylist => _favoutitePlaylist;
 
-  void toggleFavourite(TutorialPlayList playlist){
-   if (_favoutitePlaylist.contains(playlist)) {
-     _favoutitePlaylist.remove(playlist);
+  void toggleFavourite(TutorialPlayList playlist) async{
+   if (favoritePlaylistNotifier.value.contains(playlist)) {
+     await  deleteFavoriteCourse(playlist.playlistId);
+
    }else{
-    _favoutitePlaylist.add(playlist);
-    addFavorite(playlist.playlistId);
+      await  addFavoritePlaylist(playlist.playlistId);
    }
+   await getAllFavorites();
    notifyListeners();
   }
 
   bool isExist(TutorialPlayList playlist){
-    final isExist = _favoutitePlaylist.contains(playlist);
+    final isExist = favoritePlaylistNotifier.value.contains(playlist);
     return isExist;
   }
 

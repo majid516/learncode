@@ -4,16 +4,16 @@ import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/screens/user/user_screens/favorite_page.dart';
 import 'package:learncode/screens/user/user_screens/my_enrolled_course.dart';
-
+import 'package:learncode/screens/user/user_screens/user_progress.dart';
 import 'package:learncode/screens/user/widgets/account_card.dart';
 
 class AccountPage extends StatelessWidget {
   final String name;
-  final ImageProvider<Object> userProfile;
+  final ImageProvider<Object>? userProfile;
   const AccountPage({
     super.key,
     required this.name,
-    required this.userProfile,
+     this.userProfile,
   });
 
   @override
@@ -51,7 +51,7 @@ class AccountPage extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 70,
-                       // backgroundImage: userProfile,
+                        backgroundImage: userProfile,
                       ),
                       const Positioned(
                           top: 110,
@@ -85,7 +85,7 @@ class AccountPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "name",
+                            name,
                             style: accountPagetextStyle,
                           ),
                           const Icon(
@@ -110,7 +110,7 @@ class AccountPage extends StatelessWidget {
                             color: themeTextColor,
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> MyEnrolledCourses()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>const MyEnrolledCourses()));
                           }),
                            AccountCard(
                           titleText: 'progress ',
@@ -118,7 +118,10 @@ class AccountPage extends StatelessWidget {
                             Icons.auto_graph,
                             color: themeTextColor,
                           ),
-                          onPressed: () {}),
+                          onPressed: () {
+                             
+                           Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> UserProgressPage()));
+                          }),
                            AccountCard(
                           titleText: 'favourites',
                           icon: const Icon(
@@ -126,7 +129,7 @@ class AccountPage extends StatelessWidget {
                             color: Colors.red,
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> FavoritePage()));
+                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>const FavoritePage()));
 
                           }),
                      

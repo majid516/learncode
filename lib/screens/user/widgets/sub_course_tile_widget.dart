@@ -7,7 +7,7 @@ import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_playlist_page.dart';
 import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
-import 'package:learncode/screens/user/user_screens/playlist_watched_page.dart';
+import 'package:learncode/screens/user/user_screens/user_playlist_page.dart';
 
 // ignore: must_be_immutable
 class SubTutorialTileWidget extends StatelessWidget {
@@ -17,19 +17,21 @@ class SubTutorialTileWidget extends StatelessWidget {
   bool isAdmin;
  final Course course;
   final List<SubCourse> subCourse;
+  final int courseId;
   SubTutorialTileWidget({
     required this.subcourseImage,
     required this.index,
     required this.courseint,
     required this.subCourse,
     super.key,
-    required this.isAdmin, required this.course, 
+    required this.isAdmin, 
+    required this.course, 
+    required this.courseId, 
   });
 
   @override
   Widget build(BuildContext context) {
     final currentSubCourse = subCourse[index];
-    final enrolledCourseProvider = EnrolledCourseProvider.of(context);
     return InkWell(
      onTap: () {
   if (isAdmin) {
@@ -43,6 +45,7 @@ class SubTutorialTileWidget extends StatelessWidget {
         subIndex: index,
         subCourseName: currentSubCourse.subCourseTitle,
         subImage: subcourseImage,
+        courseId: courseId,
       ),
     ));
   } else if (enrolledLabel()) {

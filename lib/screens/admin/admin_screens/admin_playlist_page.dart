@@ -19,6 +19,7 @@ class AdminPlaylistPage extends StatefulWidget {
   final int subCourseId;
   final bool isAdmin;
   final String subVideo;
+  final int courseId;
 
   AdminPlaylistPage({
     super.key,
@@ -29,14 +30,15 @@ class AdminPlaylistPage extends StatefulWidget {
     required this.subCourseName,
     required this.subCourseId,
     required this.isAdmin,
-    required this.subVideo,
+    required this.subVideo, 
+    required this.courseId,
   });
 
   @override
   // ignore: library_private_types_in_public_api
   _AdminPlayListPageState createState() => _AdminPlayListPageState();
 }
-
+ List<TutorialPlayList> filteredPlaylists= [];
 class _AdminPlayListPageState extends State<AdminPlaylistPage> {
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,7 @@ class _AdminPlayListPageState extends State<AdminPlaylistPage> {
               child: ValueListenableBuilder<List<TutorialPlayList>>(
                 valueListenable: playlistNotifier,
                 builder: (ctx, playlists, child) {
-                  final filteredPlaylists = playlists
+                  filteredPlaylists = playlists
                       .where((playlist) =>
                           playlist.subCourseId == widget.subCourseId)
                       .toList();
@@ -177,6 +179,7 @@ class _AdminPlayListPageState extends State<AdminPlaylistPage> {
                       builder: (ctx) => AddPlaylistTitle(
                         subCourseId: widget.subCourseId,
                         playlistId: 1,
+                        courseId: widget.courseId,
                       ),
                     ),
                   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/models/course.dart';
+import 'package:learncode/models/user_progress.dart';
 
 ValueNotifier<List<Course>> courseNotifier = ValueNotifier([]);
 ValueNotifier<List<SubCourse>> subCourseNotifier = ValueNotifier([]);
@@ -8,6 +9,7 @@ ValueNotifier<List<TutorialPlayList>> playlistNotifier = ValueNotifier([]);
 ValueNotifier<List<QuestionNotes>> questionNoteNotifier = ValueNotifier([]);
 ValueNotifier<List<Course>> enrolledCourseNotifier = ValueNotifier([]);
 ValueNotifier<List<TutorialPlayList>> favoritePlaylistNotifier = ValueNotifier([]);
+
 
 Future<void> addNewCourse(Course values) async {
   final courseBox = await Hive.openBox<Course>('AddNewCourse');
@@ -33,11 +35,31 @@ Future<void> addNewSubCourse(SubCourse value) async {
 
 
 
+// Future<void> addPlayList(TutorialPlayList value) async {
+//   final playlistBox = await Hive.openBox<TutorialPlayList>('AddPlaylist');
+//   final playlistId = await playlistBox.add(value);
+//   value.playlistId = playlistId;
+//   playlistBox.put(playlistId, value);
+//   playlistNotifier.value = playlistBox.values.toList();
+//   playlistNotifier.notifyListeners();
+// }
+
 Future<void> addPlayList(TutorialPlayList value) async {
   final playlistBox = await Hive.openBox<TutorialPlayList>('AddPlaylist');
+  final subCourseBox = await Hive.openBox<SubCourse>('AddNewSubCourse');
+
+  // Add the playlist to Hive
   final playlistId = await playlistBox.add(value);
   value.playlistId = playlistId;
-  playlistBox.put(playlistId, value);
+  await playlistBox.put(playlistId, value);
+
+  // Now, update the corresponding SubCourse to include this playlist
+  SubCourse? subCourse = subCourseBox.get(value.subCourseId);
+  if (subCourse != null) {
+    subCourse.tutorialPlayList = (subCourse.tutorialPlayList ?? [])..add(value);
+    await subCourseBox.put(subCourse.id, subCourse);
+  }
+
   playlistNotifier.value = playlistBox.values.toList();
   playlistNotifier.notifyListeners();
 }
@@ -129,10 +151,7 @@ Future<void> updateCouse(
     return;
   }
   final id = course.id;
-  // if (id == null) {
-  //   print("Error: Course ID is null");
-  //   return;
-  // }
+  
   final updatedCourse = Course(
     id: id,
     courseThumbnailPath: thumbnail,
@@ -184,13 +203,11 @@ Future<void> addEnrolledCourse(int courseId) async {
 Future<void> getAllEnrolledCourse() async{
   final enrolledBox = await Hive.openBox<int>('EnrolledCourse');
   List<int> enrolledIdList = enrolledBox.values.toList();
-  print(enrolledIdList);
   enrolledCourseNotifier.value = enrolledIdList.map((element) { 
    final  en = courseNotifier.value.firstWhere((course) => course.id==element,);
    return en;
   }
   ).toList();
-  print('not added item in enrolled');
   enrolledCourseNotifier.notifyListeners();
 
 }
@@ -201,14 +218,18 @@ Future<void> deleteEnrolledCourse(int id) async {
   getAllEnrolledCourse();
 }
 
-Future<void> addFavorite(int playlistId)async{
-  final favouriteBox = await Hive.openBox<int>('favorite');
- favouriteBox.add(playlistId);
+
+
+Future<void> addFavoritePlaylist(int playlistId)async{
+  final favoriteBox = await Hive.openBox<int>('Favorites');
+  await favoriteBox.add(playlistId);
 }
 
-Future<void> getAllFavoritePlaylist() async{
-  final favouriteBox = await Hive.openBox<int>('favorite');
-  List<int> favoriteList = favouriteBox.values.toList();
+
+Future<void> getAllFavorites()async{
+  final favoriteBox = await Hive.openBox<int>('Favorites');
+  //favoritePlaylistNotifier.value = favoriteBox.values.toList();
+  List<int> favoriteList = favoriteBox.values.toList();
   favoritePlaylistNotifier.value = favoriteList.map((element) { 
    final  en = playlistNotifier.value.firstWhere((course) => course.playlistId==element,);
    return en;
@@ -216,12 +237,26 @@ Future<void> getAllFavoritePlaylist() async{
   ).toList();
   print('not added item in favouritePlaylist');
   favoritePlaylistNotifier.notifyListeners();
-
 }
+
+
 
 Future<void> deleteFavoriteCourse(int playlistId) async {
-  final favouriteBox = await Hive.openBox<int>('favorite');
-  await favouriteBox.delete(playlistId);
+  final favoriteBox = await Hive.openBox<int>('Favorites');
+  List<int> list = favoriteBox.values.toList();
+ 
+  print('delete funtion worked   ${playlistId}');
   favoritePlaylistNotifier.notifyListeners();
-  getAllFavoritePlaylist();
+
+
+  int ind = 0;
+  for (var i = 0; i < list.length; i++) {
+  if (list[i] == playlistId) {
+     ind = i;
+     break;
+    }
+  }
+ await favoriteBox.deleteAt(ind);
 }
+
+

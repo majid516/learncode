@@ -42,6 +42,31 @@ class CourseDetails {
   });
 }
 
+// @HiveType(typeId: 2)
+// class SubCourse extends HiveObject {
+//   @HiveField(0)
+//   String subCourseThumbnailPath;
+
+//   @HiveField(1)
+//   String subCourseTitle;
+
+//   @HiveField(2)
+//   final List<TutorialPlayList>? tutorialPlayList;
+
+//   @HiveField(3)
+//   int? id;
+
+//   @HiveField(4)
+//   int courseId;
+
+//   SubCourse({
+//     this.id,
+//     required this.courseId,
+//     required this.subCourseThumbnailPath,
+//     required this.subCourseTitle,
+//     this.tutorialPlayList,
+//   });
+// }
 @HiveType(typeId: 2)
 class SubCourse extends HiveObject {
   @HiveField(0)
@@ -51,7 +76,7 @@ class SubCourse extends HiveObject {
   String subCourseTitle;
 
   @HiveField(2)
-  final List<TutorialPlayList>? tutorialPlayList;
+  List<TutorialPlayList> tutorialPlayList = []; // Initialize to empty list
 
   @HiveField(3)
   int? id;
@@ -64,9 +89,10 @@ class SubCourse extends HiveObject {
     required this.courseId,
     required this.subCourseThumbnailPath,
     required this.subCourseTitle,
-    this.tutorialPlayList,
-  });
+    List<TutorialPlayList>? tutorialPlayList,
+  }) : tutorialPlayList = tutorialPlayList ?? [];
 }
+
 
 @HiveType(typeId: 3)
 class TutorialPlayList {
