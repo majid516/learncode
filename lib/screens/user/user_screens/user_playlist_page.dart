@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/database/delete_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_sub_course_title.dart';
 import 'package:learncode/screens/user/widgets/playlist_list.dart';
@@ -16,6 +17,7 @@ class UserPlayListPage extends StatefulWidget {
   final int subCourseId;
   final bool isAdmin;
   final String subVideo;
+  final int? courseId;
 
   UserPlayListPage({
     super.key,
@@ -27,6 +29,7 @@ class UserPlayListPage extends StatefulWidget {
     required this.subCourseId,
     this.isAdmin = false,
     required this.subVideo,
+    this.courseId,
   });
 
   @override
@@ -37,7 +40,7 @@ class UserPlayListPage extends StatefulWidget {
 class _UserPlayListPageState extends State<UserPlayListPage> {
   @override
   Widget build(BuildContext context) {
-    fechingPlaylist(); // Ensure this function is correctly defined to populate `playlistNotifier`
+    fechingPlaylist();
     final subCourseName = widget.subCourseName;
 
     return SafeArea(
@@ -127,12 +130,11 @@ class _UserPlayListPageState extends State<UserPlayListPage> {
               child: ValueListenableBuilder<List<TutorialPlayList>>(
                 valueListenable: playlistNotifier,
                 builder: (ctx, playlists, child) {
-                  
                   final filteredPlaylists = playlists
                       .where((playlist) =>
                           playlist.subCourseId == widget.subCourseId)
                       .toList();
-                 
+
                   return PlaylistTab(
                     subVideo: widget.subVideo,
                     isAdmin: widget.isAdmin,

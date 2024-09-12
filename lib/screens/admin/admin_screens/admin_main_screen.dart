@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/database/course_add_functions.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
+import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/admin/add_course/add_course_details.dart';
 import 'package:learncode/screens/admin/add_course/add_course_thumbnail.dart';
 import 'package:learncode/screens/admin/add_course/add_new_course.dart';
@@ -11,7 +13,8 @@ import 'package:learncode/screens/admin/admin_screens/admin_view_screen.dart';
 import 'package:learncode/screens/admin/widgets/admin_appabar_widget.dart';
 
 class AdminMainScreen extends StatefulWidget {
-  const AdminMainScreen({super.key});
+  final UserDetails userDetails;
+  const AdminMainScreen({super.key, required this.userDetails});
 
   @override
   State<AdminMainScreen> createState() => _AdminMainScreenState();
@@ -29,7 +32,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      AdminViewScreeen(),
+      const AdminViewScreeen(),
       AddNewCourse(
         onCourseAdded: goToFirstPage,
         submitFuntion: () {
@@ -46,18 +49,20 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               ),
             );
             addNewCourse(course);
-          } else {
-            //   print('Please fill in all the required fields.');
-          }
+          } else {}
           return null;
         },
       ),
-      const AdminAccountScreen()
+      AdminAccountScreen(
+        userDetails: UserDetails(
+            userName: widget.userDetails.userName,
+            userProfile: widget.userDetails.userProfile),
+      )
     ];
 
     return SafeArea(
       child: Scaffold(
-        appBar: const AdminAppabarWidget(),
+        appBar: AdminAppbarWidget(),
         backgroundColor: homeColor,
         body: screens[currentSelectedIndex],
         bottomNavigationBar: Container(

@@ -16,31 +16,37 @@ class AccountCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
-      child: SizedBox(
-        width: ScreenSize.widthMed * 0.27,
-        height: ScreenSize.widthMed * 0.27,
-        child: Card(
-          elevation: 4,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: whiteColor,
-                  radius: 20,
-                  child: icon,
-                ),
-                const SizedBox(
-                  height: 3,
-                ),
-                Text(titleText)
-              ],
+      child: LayoutBuilder(builder: (context, constraints) {
+        bool isMobile = constraints.maxWidth < 600;
+
+        double containerSize = isMobile ? ScreenSize.widthMed*0.27: ScreenSize.widthMed*0.17;
+     
+        return SizedBox(
+          width: containerSize,
+          height: containerSize,
+          child: Card(
+            elevation: 4,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: whiteColor,
+                    radius: 20,
+                    child: icon,
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Text(titleText)
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

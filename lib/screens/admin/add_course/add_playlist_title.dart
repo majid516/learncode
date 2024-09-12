@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/database/course_add_functions.dart';
 import 'package:learncode/database/user_progress_db.dart';
 import 'package:learncode/models/course.dart';
 import 'package:video_player/video_player.dart';
@@ -20,7 +20,8 @@ class AddPlaylistTitle extends StatefulWidget {
   const AddPlaylistTitle({
     super.key,
     this.subCourseId,
-    required this.playlistId, required this.courseId,
+    required this.playlistId,
+    required this.courseId,
   });
 
   static XFile? pickedVideo;
@@ -49,7 +50,7 @@ class _AddPlaylistTitleState extends State<AddPlaylistTitle> {
           title: const Text(
         'Add course playlist ',
         style: accountPagetextStyle,
-      )), 
+      )),
       body: SizedBox(
         width: ScreenSize.widthMed,
         height: ScreenSize.heightMed,
@@ -140,13 +141,13 @@ class _AddPlaylistTitleState extends State<AddPlaylistTitle> {
                         ),
                       );
                       await addPlayList(data);
-                      await updatePlaylistCount(widget.courseId, 1);
+                      updatePlaylistCount(widget.courseId, 0);
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                        backgroundColor: Color.fromARGB(255, 192, 32, 21),
+                            backgroundColor: Color.fromARGB(255, 192, 32, 21),
                             content: Text('add plalist title and video')),
                       );
                     }

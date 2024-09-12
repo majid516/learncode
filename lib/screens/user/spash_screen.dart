@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/mediaquery.dart';
-import 'package:learncode/screens/user/user_screens/get_started_page.dart';
+import 'package:learncode/database/user_details_db.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -15,7 +15,8 @@ class SplashScreenPage extends StatefulWidget {
 class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
-    goGetstarted();
+    goGetstarted(context);
+    getUser();
     super.initState();
   }
 
@@ -30,9 +31,10 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
     ));
   }
 
-  Future<void> goGetstarted() async {
+  Future<void> goGetstarted(BuildContext ctx) async {
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => const GetStarted()));
+    checkUserDetails(ctx);
   }
 }
+
+

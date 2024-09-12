@@ -10,7 +10,9 @@ import 'package:learncode/buttons/enroll_button.dart';
 import 'package:learncode/buttons/update_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/database/course_add_functions.dart';
 import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/database/delete_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/admin/add_course/add_sub_couse_thumbnail.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_course_details.dart';
@@ -39,7 +41,8 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
     this.isAdmin = false,
     required this.course,
   });
-    static int playlistCount = 0;
+  static int playlistCount = 0;
+  static int mainCourseId = 0;
   @override
   State<AdminTutorialMainPageDetails> createState() =>
       _AdminTutorialMainPageDetailsState();
@@ -47,12 +50,15 @@ class AdminTutorialMainPageDetails extends StatefulWidget {
 
 class _AdminTutorialMainPageDetailsState
     extends State<AdminTutorialMainPageDetails> {
-  
   late FlickManager flickManager;
   ValueNotifier<List<SubCourse>> filteredSubCoursesNotifier = ValueNotifier([]);
 
   @override
   void initState() {
+    filterPlaylist(widget.id);
+
+    AdminTutorialMainPageDetails.mainCourseId = widget.id;
+
     getAllEnrolledCourse();
 
     super.initState();
@@ -65,8 +71,7 @@ class _AdminTutorialMainPageDetailsState
           return null;
         }),
     );
-   filterPlaylist(widget.id);
-   
+
     fetchSubCourses(widget.tutorialTitle);
   }
 
@@ -83,9 +88,6 @@ class _AdminTutorialMainPageDetailsState
     filteredSubCoursesNotifier.value = allSubCourses
         .where((subCourse) => subCourse.courseId == widget.id)
         .toList();
-
-    // print(
-    // 'Filtered SubCourses length: ${filteredSubCoursesNotifier.value.length}');
     filteredSubCoursesNotifier.value
         .forEach((subCourse) => print(subCourse.subCourseTitle));
   }
@@ -99,7 +101,8 @@ class _AdminTutorialMainPageDetailsState
   Widget build(BuildContext context) {
     getAllSubCourses();
     fechingSubcourse();
-   final enrolledProvider = EnrolledCourseProvider.of(context);
+    filterPlaylist(widget.id);
+    final enrolledProvider = EnrolledCourseProvider.of(context);
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -125,14 +128,13 @@ class _AdminTutorialMainPageDetailsState
                     widget.isAdmin
                         ? const SizedBox()
                         : enrolledProvider.isExist(widget.course)
-                           
                             ? Container(
                                 width: ScreenSize.widthMed * 0.2,
                                 height: 30,
                                 decoration: BoxDecoration(
                                     gradient: themePurple,
                                     borderRadius: BorderRadius.circular(10)),
-                                child:const Center(
+                                child: const Center(
                                     child: Text(
                                   'enrolled',
                                   style: TextStyle(
@@ -141,11 +143,14 @@ class _AdminTutorialMainPageDetailsState
                                 )),
                               )
                             : EnrollButton(onPressed: () {
+                                filterPlaylist(widget.id);
                                 showDialog(
                                     context: context,
                                     builder: (ctx) => EnrollingAlert(
                                           progressPoint: 2,
-                                          totalPoint: AdminTutorialMainPageDetails.playlistCount,
+                                          totalPoint:
+                                              AdminTutorialMainPageDetails
+                                                  .playlistCount,
                                           courseId: widget.id,
                                           course: widget.course,
                                         ));
@@ -182,7 +187,6 @@ class _AdminTutorialMainPageDetailsState
                     ValueListenableBuilder<List<SubCourse>>(
                       valueListenable: filteredSubCoursesNotifier,
                       builder: (context, filteredSubCourses, child) {
-                       
                         if (filteredSubCourses.isEmpty) {
                           return SizedBox(
                               width: ScreenSize.widthMed,
@@ -254,7 +258,7 @@ class _AdminTutorialMainPageDetailsState
                                       context: context,
                                       builder: (ctx) {
                                         return AlertDialog(
-                                          content:const Text(
+                                          content: const Text(
                                             'are you sure to remove this course',
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -265,7 +269,7 @@ class _AdminTutorialMainPageDetailsState
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                child:const Text(
+                                                child: const Text(
                                                   'cancel',
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -278,7 +282,7 @@ class _AdminTutorialMainPageDetailsState
                                                   Navigator.of(context).pop();
                                                   Navigator.of(context).pop();
                                                 },
-                                                child:const Text(
+                                                child: const Text(
                                                   'delete',
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -303,12 +307,7 @@ class _AdminTutorialMainPageDetailsState
                               }),
                             ],
                           )
-                        :  ElevatedButton(
-                         child: Text('data'),
-                         onPressed: () {
-                          filterPlaylist(widget.id);
-                         },
-                        ),
+                        : const SizedBox()
                   ],
                 ),
               ),
@@ -318,15 +317,18 @@ class _AdminTutorialMainPageDetailsState
       ),
     );
   }
-void filterPlaylist(int courseId) {
- int count = 0;
-  List<SubCourse> subCourses = subCourseNotifier.value.where((sub) => sub.courseId == courseId).toList();
+}
+
+Future<int> filterPlaylist(int courseId) async {
+  int count = 0;
+  List<SubCourse> subCourses =
+      subCourseNotifier.value.where((sub) => sub.courseId == courseId).toList();
   log('SubCourses found: ${subCourses.length} for Course ID: $courseId');
   for (var subCourse in subCourses) {
     log('SubCourse ID: ${subCourse.courseId}, SubCourse Title: ${subCourse.subCourseTitle}');
     if (subCourse.tutorialPlayList.isNotEmpty) {
       log('Playlist found with length: ${subCourse.tutorialPlayList.length}');
-     count += subCourse.tutorialPlayList.length;
+      count += subCourse.tutorialPlayList.length;
     } else {
       log('No playlists found for SubCourse: ${subCourse.subCourseTitle}');
     }
@@ -334,9 +336,5 @@ void filterPlaylist(int courseId) {
   log('Total Playlists under course $courseId: ${count}');
   AdminTutorialMainPageDetails.playlistCount = count;
   print('count === ${AdminTutorialMainPageDetails.playlistCount}');
+  return count;
 }
-
-
-}
-
-

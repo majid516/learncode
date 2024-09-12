@@ -3,6 +3,7 @@ import 'package:learncode/buttons/add_sub_course.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/database/database_funtions.dart';
+import 'package:learncode/database/delete_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/screens/admin/add_course/add_playlist_title.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_sub_course_title.dart';
@@ -30,7 +31,7 @@ class AdminPlaylistPage extends StatefulWidget {
     required this.subCourseName,
     required this.subCourseId,
     required this.isAdmin,
-    required this.subVideo, 
+    required this.subVideo,
     required this.courseId,
   });
 
@@ -38,7 +39,9 @@ class AdminPlaylistPage extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _AdminPlayListPageState createState() => _AdminPlayListPageState();
 }
- List<TutorialPlayList> filteredPlaylists= [];
+
+List<TutorialPlayList> filteredPlaylists = [];
+
 class _AdminPlayListPageState extends State<AdminPlaylistPage> {
   @override
   Widget build(BuildContext context) {
@@ -156,18 +159,19 @@ class _AdminPlayListPageState extends State<AdminPlaylistPage> {
                       .where((playlist) =>
                           playlist.subCourseId == widget.subCourseId)
                       .toList();
-                    if (filteredPlaylists.isEmpty) {
-                      return const Center(child: Text('No Playlist Available'));
-                    }else{
-                  return PlaylistTab(
-                    subVideo: widget.subVideo,
-                    isAdmin: widget.isAdmin,
-                    playlists: filteredPlaylists,
-                    courseIndex: widget.courseIndex,
-                    subCourseIndex: widget.subIndex,
-                    subTitle: subCourseName,
-                    playListIndex: widget.index,
-                  );}
+                  if (filteredPlaylists.isEmpty) {
+                    return const Center(child: Text('No Playlist Available'));
+                  } else {
+                    return PlaylistTab(
+                      subVideo: widget.subVideo,
+                      isAdmin: widget.isAdmin,
+                      playlists: filteredPlaylists,
+                      courseIndex: widget.courseIndex,
+                      subCourseIndex: widget.subIndex,
+                      subTitle: subCourseName,
+                      playListIndex: widget.index,
+                    );
+                  }
                 },
               ),
             ),

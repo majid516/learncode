@@ -14,22 +14,30 @@ class ContinueButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: whiteColor,
-        elevation: 8,
-        fixedSize: Size(ScreenSize.widthMed * 0.8, 60),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      ),
-      child: Text(
-        title,
-        style:const TextStyle(
-          color: blackColor,
-          fontWeight: FontWeight.w800,
-          fontSize: 18,
+    return LayoutBuilder(builder: (context, constraints) {
+      bool isMobile = constraints.maxWidth < 600;
+
+      double containerWidth =
+          isMobile ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.5;
+
+      return ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: whiteColor,
+          elevation: 8,
+          fixedSize: Size(containerWidth * 0.8, 60),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         ),
-      ),
-    );
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: blackColor,
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+          ),
+        ),
+      );
+    });
   }
 }

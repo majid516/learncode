@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/models/admin_details.dart';
 import 'package:learncode/models/course.dart';
+import 'package:learncode/models/reports.dart';
 import 'package:learncode/models/user_details.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/models/user_progress.dart';
 import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
 import 'package:learncode/screens/user/provider/favourite_provider.dart';
 import 'package:learncode/screens/user/spash_screen.dart';
-import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
 import 'package:provider/provider.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
- await Hive.initFlutter();
-   // Register Hive adapters
-   if (!Hive.isAdapterRegistered(CourseDetailsAdapter().typeId)) {
-     Hive.registerAdapter(CourseDetailsAdapter()); 
-   }
+  await Hive.initFlutter();
+  // Register Hive adapters
+  if (!Hive.isAdapterRegistered(CourseDetailsAdapter().typeId)) {
+    Hive.registerAdapter(CourseDetailsAdapter());
+  }
   if (!Hive.isAdapterRegistered(UserDetailsAdapter().typeId)) {
     Hive.registerAdapter(UserDetailsAdapter());
   }
@@ -39,19 +40,24 @@ Future<void> main() async{
   if (!Hive.isAdapterRegistered(UserProgressAdapter().typeId)) {
     Hive.registerAdapter(UserProgressAdapter());
   }
-
+  if (!Hive.isAdapterRegistered(AdminDetailsAdapter().typeId)) {
+    Hive.registerAdapter(AdminDetailsAdapter());
+  }
+  if (!Hive.isAdapterRegistered(ReportAdapter().typeId)) {
+    Hive.registerAdapter(ReportAdapter());
+  }
   runApp(const LearnCode());
 }
 
 class LearnCode extends StatelessWidget {
   const LearnCode({super.key});
- @override
+  @override
   Widget build(BuildContext context) {
     ScreenSize.initialize(context);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (ctx)=> FavouriteProvider()),
-        ChangeNotifierProvider(create: (ctx)=> EnrolledCourseProvider())
+        ChangeNotifierProvider(create: (ctx) => FavouriteProvider()),
+        ChangeNotifierProvider(create: (ctx) => EnrolledCourseProvider())
       ],
       child: MaterialApp(
         color: blackColor,
@@ -60,9 +66,7 @@ class LearnCode extends StatelessWidget {
           fontFamily: 'MyCustomFont',
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-       home: UserHomeScreen(),
-      // home:const AdminMainScreen(),
-     // home:const SplashScreenPage() ,
+        home: const SplashScreenPage(),
       ),
     );
   }

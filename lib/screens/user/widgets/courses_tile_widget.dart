@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
@@ -7,7 +9,7 @@ import 'package:learncode/models/course.dart';
 class TutorialTileWidget extends StatelessWidget {
   final Course course;
   final VoidCallback onPressed;
-
+ 
   const TutorialTileWidget({
     super.key,
     required this.course,
@@ -54,10 +56,19 @@ class TutorialTileWidget extends StatelessWidget {
                 width: ScreenSize.widthMed * 0.36,
                 height: ScreenSize.widthMed * 0.3,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: FileImage(File(course.courseThumbnailPath)),
-                    fit: BoxFit.cover,
-                  ),
+                 image: kIsWeb
+                        ? DecorationImage(
+                            image: MemoryImage(base64Decode(course.courseThumbnailPath)),
+                            fit: BoxFit.fill,
+                          )
+                        : DecorationImage(
+                            image: FileImage(File(course.courseThumbnailPath)),
+                            fit: BoxFit.fill,
+                          ),
+                  // image: DecorationImage(
+                  //   image: FileImage(File(course.courseThumbnailPath)),
+                  //   fit: BoxFit.cover,
+                  // ),
                   borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(

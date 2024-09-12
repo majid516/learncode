@@ -8,7 +8,7 @@ part of 'user_details.dart';
 
 class UserDetailsAdapter extends TypeAdapter<UserDetails> {
   @override
-  final int typeId = 1;
+  final int typeId = 10;
 
   @override
   UserDetails read(BinaryReader reader) {
@@ -17,7 +17,7 @@ class UserDetailsAdapter extends TypeAdapter<UserDetails> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return UserDetails(
-      userProfile: fields[0] as ImageProvider<Object>,
+      userProfile: fields[0] as String,
       userName: fields[1] as String,
     );
   }

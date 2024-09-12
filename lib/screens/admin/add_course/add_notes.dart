@@ -20,7 +20,6 @@ class AddNotes extends StatefulWidget {
   State<AddNotes> createState() => _AddNotesState();
 }
 
-
 class _AddNotesState extends State<AddNotes> {
   final _formKey = GlobalKey<FormState>();
 
@@ -54,7 +53,7 @@ class _AddNotesState extends State<AddNotes> {
     );
     final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
     await noteBox.add(note);
- 
+
     final notes =
         noteBox.values.where((n) => n.playlistId == widget.playListId).toList();
     questionNoteNotifier.value = notes;

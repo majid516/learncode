@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:learncode/database/course_add_functions.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class EnrolledCourseProvider extends ChangeNotifier{
  }
 
  bool isExist(Course course){
-  final isExist = _myEnrolledCourseList.contains(course);
+  final isExist = enrolledCourseNotifier.value.contains(course)||_myEnrolledCourseList.contains(course);
   return isExist;
  }
 

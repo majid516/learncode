@@ -30,6 +30,7 @@ VideoPlayerController? updatedvideoController;
 class _UpdatePlaylistState extends State<UpdatePlaylist> {
   @override
   Widget build(BuildContext context) {
+    playListUpdatedTitleController.text = widget.playlistName;
     return AlertDialog(
       content: SizedBox(
         height: ScreenSize.heightMed * 0.5,
@@ -78,19 +79,15 @@ class _UpdatePlaylistState extends State<UpdatePlaylist> {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.grey[200],
                 ),
-                child: AddPlaylistTitle.pickedVideo != null
-                    ? AddPlaylistTitle.videoControllers != null &&
-                            AddPlaylistTitle
-                                .videoControllers!.value.isInitialized
-                        ? AspectRatio(
-                            aspectRatio: AddPlaylistTitle
-                                .videoControllers!.value.aspectRatio,
-                            child:
-                                VideoPlayer(AddPlaylistTitle.videoControllers!),
-                          )
-                        : const Center(child: CircularProgressIndicator())
-                    : const Center(
-                        child: Text('No video selected'),
+
+                 child: AddPlaylistTitle.pickedVideo != null
+                    ? AspectRatio(
+                        aspectRatio:AddPlaylistTitle.videoControllers!.value.aspectRatio,
+                        child: VideoPlayer(AddPlaylistTitle.videoControllers!),
+                      )
+                    : AspectRatio(
+                        aspectRatio: 1 / 1,
+                        child: VideoPlayer(VideoPlayerController.file(File(widget.subVideo))),
                       ),
               ),
             ),
@@ -123,7 +120,6 @@ class _UpdatePlaylistState extends State<UpdatePlaylist> {
         await picker.pickVideo(source: ImageSource.gallery);
 
     if (selectedVideo != null) {
-      // Dispose the previous controller if it exists
       if (AddPlaylistTitle.videoControllers != null) {
         AddPlaylistTitle.videoControllers!.dispose();
       }
@@ -134,13 +130,10 @@ class _UpdatePlaylistState extends State<UpdatePlaylist> {
               if (mounted) {
                 setState(() {
                   AddPlaylistTitle.pickedVideo = selectedVideo;
-                  AddPlaylistTitle.videoControllers!
-                      .play(); // Play the video after initialization
+                  AddPlaylistTitle.videoControllers!.play();
                 });
               }
-            }).catchError((error) {
-              //   print('Error initializing video: $error');
-            });
+            }).catchError((error) {});
     }
   }
 }

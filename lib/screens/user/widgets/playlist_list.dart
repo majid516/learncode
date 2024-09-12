@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/models/course.dart';
-import 'package:learncode/models/user_progress.dart';
 import 'package:learncode/modules/admin_sub_tutorial_detail_pade.dart';
 
 class PlaylistTab extends StatelessWidget {
@@ -29,7 +28,6 @@ class PlaylistTab extends StatelessWidget {
       itemCount: playlists.length,
       itemBuilder: (context, index) {
         final playlist = playlists[index];
-       // final nextPlaylist = index+1 < playlists.length ? playlists[index+1] : playlist;
         return Padding(
           padding: const EdgeInsetsDirectional.symmetric(
               vertical: 10, horizontal: 20),
@@ -43,19 +41,16 @@ class PlaylistTab extends StatelessWidget {
                       color: Color.fromARGB(61, 0, 0, 0),
                       blurRadius: 3,
                       offset: Offset(0, 3))
-                ]), 
+                ]),
             child: InkWell(
               onTap: () {
-            //    UserProgress(courseIndex, subCourseIndex, playListIndex, 0);
-                
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (ctx) => AdminSubTutorialDetailPage(
-                         listOFPLaylist: playlists,
-                        // nextPlaylist: nextPlaylist,
-                         playlist: playlist,
-                         playlistId: playlist.playlistId,
-                         subVideo: playlist.subCourseDetails!.subCourseVideo ,
-                         subcourseId: playlist.subCourseId,
+                          listOFPLaylist: playlists,
+                          playlist: playlist,
+                          playlistId: playlist.playlistId,
+                          subVideo: playlist.subCourseDetails!.subCourseVideo,
+                          subcourseId: playlist.subCourseId,
                           tutorialTitle: subTitle,
                           courseindex: courseIndex,
                           subCourseindex: subCourseIndex,

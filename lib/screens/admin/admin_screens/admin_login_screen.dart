@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/continue_btn.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_main_screen.dart';
 
 class NamePage extends StatefulWidget {
-  const NamePage({super.key});
+  final UserDetails userDetails;
+  const NamePage({
+    super.key,
+    required this.userDetails,
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -25,105 +30,114 @@ class _NamePageState extends State<NamePage> {
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            width: ScreenSize.widthMed,
-            height: ScreenSize.heightMed,
-            decoration: const BoxDecoration(
-              gradient: themePurple,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Login admin account',
-                        style: TextStyle(color: whiteColor, fontSize: 22),
-                      ),
-                      const SizedBox(height: 30),
-                      Container(
-                        width: ScreenSize.widthMed * 0.8,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: const Color(0x00D9D9D9).withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(15),
+          child: LayoutBuilder(builder: (context, constraints) {
+            bool isMobile = constraints.maxWidth < 600;
+            double containerWidth = isMobile
+                ? constraints.maxWidth * 0.8
+                : constraints.maxWidth * 0.5;
+
+            return Container(
+              width: ScreenSize.widthMed,
+              height: ScreenSize.heightMed,
+              decoration: const BoxDecoration(
+                gradient: themePurple,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Login admin account',
+                          style: TextStyle(color: whiteColor, fontSize: 22),
                         ),
-                        child: TextFormField(
-                          controller: _nameController,
-                          cursorColor: whiteColor,
-                          style: const TextStyle(color: whiteColor),
-                          decoration: InputDecoration(
-                            errorBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.red, width: 2)),
-                            border: InputBorder.none,
-                            hintText: 'Enter name',
-                            hintStyle:
-                                TextStyle(color: whiteColor.withOpacity(0.6)),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 16),
+                        const SizedBox(height: 30),
+                        Container(
+                          width: containerWidth,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: const Color(0x00D9D9D9).withOpacity(0.35),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter name';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      Container(
-                        width: ScreenSize.widthMed * 0.8,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: const Color(0x00D9D9D9).withOpacity(0.35),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          cursorColor: whiteColor,
-                          style: const TextStyle(color: whiteColor),
-                          decoration: InputDecoration(
-                            errorBorder: const OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.red, width: 2)),
-                            border: InputBorder.none,
-                            hintText: 'Enter Password',
-                            hintStyle:
-                                TextStyle(color: whiteColor.withOpacity(0.6)),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 16),
+                          child: TextFormField(
+                            controller: _nameController,
+                            cursorColor: whiteColor,
+                            style: const TextStyle(color: whiteColor),
+                            decoration: InputDecoration(
+                              errorBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2)),
+                              border: InputBorder.none,
+                              hintText: 'Enter name',
+                              hintStyle:
+                                  TextStyle(color: whiteColor.withOpacity(0.6)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 16),
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter name';
+                              }
+                              return null;
+                            },
                           ),
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter password';
-                            }
-                            return null;
-                          },
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 30),
+                        Container(
+                          width: containerWidth,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: const Color(0x00D9D9D9).withOpacity(0.35),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: TextFormField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            cursorColor: whiteColor,
+                            style: const TextStyle(color: whiteColor),
+                            decoration: InputDecoration(
+                              errorBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.red, width: 2)),
+                              border: InputBorder.none,
+                              hintText: 'Enter Password',
+                              hintStyle:
+                                  TextStyle(color: whiteColor.withOpacity(0.6)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 16),
+                            ),
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                ContinueButton(
-                  title: 'Continue',
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      adminLogin(context);
-                    }
-                  },
-                ),
-              ],
-            ),
-          ),
+                  const SizedBox(height: 30),
+                  ContinueButton(
+                    title: 'Continue',
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        adminLogin(context);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -133,8 +147,12 @@ class _NamePageState extends State<NamePage> {
     final name = _nameController.text.trim();
     final password = _passwordController.text.trim();
     if (name == adminName && password == adminPassword) {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) =>const AdminMainScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (ctx) => AdminMainScreen(
+                userDetails: UserDetails(
+                    userName: widget.userDetails.userName,
+                    userProfile: widget.userDetails.userProfile),
+              )));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         behavior: SnackBarBehavior.floating,

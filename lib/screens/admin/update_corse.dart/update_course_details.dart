@@ -35,7 +35,7 @@ class UpdateCourseDetails extends StatefulWidget {
 
 class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
   final ImagePicker picker = ImagePicker();
-  late VideoPlayerController _videoController; // Marked as late
+  late VideoPlayerController _videoController;
 
   final titleController = TextEditingController();
   final discriptionController = TextEditingController();
@@ -179,17 +179,16 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
     final XFile? selectedVideo =
         await picker.pickVideo(source: ImageSource.gallery);
     if (selectedVideo != null) {
-      _videoController.dispose(); // Dispose of the previous controller
+      _videoController.dispose();
 
-      // Initialize the new video controller
       _videoController = VideoPlayerController.file(File(selectedVideo.path))
         ..initialize().then((_) {
-          setState(() {}); // Update the UI when the controller is ready
+          setState(() {});
           _videoController.play();
         });
 
       setState(() {
-        AddCourseDetails.pickedVideo = selectedVideo; // Assign picked video
+        AddCourseDetails.pickedVideo = selectedVideo;
       });
     }
   }
@@ -206,7 +205,7 @@ class _UpdateCourseDetailsState extends State<UpdateCourseDetails> {
 
   @override
   void dispose() {
-    _videoController.dispose(); // Dispose of the controller
+    _videoController.dispose();
     super.dispose();
   }
 }

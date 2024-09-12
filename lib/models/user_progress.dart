@@ -9,10 +9,12 @@ class UserProgress {
   final int progressPoint; 
   @HiveField(2)
   final int totalPoint; 
-
+  @HiveField(3)
+  final List<int>? completedPlaylist;
   UserProgress(
     this.courseId,
     this.progressPoint,
     this.totalPoint,
+    [this.completedPlaylist, ]
   );
 }

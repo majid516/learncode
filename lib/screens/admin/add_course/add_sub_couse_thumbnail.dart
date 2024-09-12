@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/submit_button.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
+import 'package:learncode/database/course_add_functions.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 
@@ -76,8 +77,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               SizedBox(height: ScreenSize.heightMed * 0.03),
               const Text(
                 'Add Sub Course Thumbnail',
-                style:
-                    addTutorialPagestyle, 
+                style: addTutorialPagestyle,
               ),
               SizedBox(height: ScreenSize.heightMed * 0.05),
               Container(
@@ -96,9 +96,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
                   ],
                 ),
                 child: TextFormField(
-                 
-                  controller:
-                      subCourseTitleController, 
+                  controller: subCourseTitleController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(borderSide: BorderSide.none),
                     hintText: 'Enter Sub Course Title',

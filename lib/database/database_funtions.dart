@@ -1,104 +1,16 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/models/course.dart';
-import 'package:learncode/models/user_progress.dart';
 
 ValueNotifier<List<Course>> courseNotifier = ValueNotifier([]);
 ValueNotifier<List<SubCourse>> subCourseNotifier = ValueNotifier([]);
 ValueNotifier<List<TutorialPlayList>> playlistNotifier = ValueNotifier([]);
 ValueNotifier<List<QuestionNotes>> questionNoteNotifier = ValueNotifier([]);
 ValueNotifier<List<Course>> enrolledCourseNotifier = ValueNotifier([]);
-ValueNotifier<List<TutorialPlayList>> favoritePlaylistNotifier = ValueNotifier([]);
-
-
-Future<void> addNewCourse(Course values) async {
-  final courseBox = await Hive.openBox<Course>('AddNewCourse');
-  int id = await courseBox.add(values);
-  values.id = id;
-  await courseBox.put(id, values);
-  courseNotifier.value = courseBox.values.toList();
-  courseNotifier.notifyListeners();
-  print(id);
-  print('valuessss${values.id}');
-}
-
-Future<void> addNewSubCourse(SubCourse value) async {
-  final subCourseBox = await Hive.openBox<SubCourse>('AddNewSubCourse');
-  int id = await subCourseBox.add(value);
-  value.id = id;
-  await subCourseBox.put(id, value);
-  subCourseNotifier.value = subCourseBox.values.toList();
-  subCourseNotifier.notifyListeners();
-  print('courseInsex = ${value.courseId}');
-  print('subcourseInsex = ${value.id}');
-}
-
-
-
-// Future<void> addPlayList(TutorialPlayList value) async {
-//   final playlistBox = await Hive.openBox<TutorialPlayList>('AddPlaylist');
-//   final playlistId = await playlistBox.add(value);
-//   value.playlistId = playlistId;
-//   playlistBox.put(playlistId, value);
-//   playlistNotifier.value = playlistBox.values.toList();
-//   playlistNotifier.notifyListeners();
-// }
-
-Future<void> addPlayList(TutorialPlayList value) async {
-  final playlistBox = await Hive.openBox<TutorialPlayList>('AddPlaylist');
-  final subCourseBox = await Hive.openBox<SubCourse>('AddNewSubCourse');
-
-  // Add the playlist to Hive
-  final playlistId = await playlistBox.add(value);
-  value.playlistId = playlistId;
-  await playlistBox.put(playlistId, value);
-
-  // Now, update the corresponding SubCourse to include this playlist
-  SubCourse? subCourse = subCourseBox.get(value.subCourseId);
-  if (subCourse != null) {
-    subCourse.tutorialPlayList = (subCourse.tutorialPlayList ?? [])..add(value);
-    await subCourseBox.put(subCourse.id, subCourse);
-  }
-
-  playlistNotifier.value = playlistBox.values.toList();
-  playlistNotifier.notifyListeners();
-}
-
-Future<void> addNotes(QuestionNotes value) async {
-  final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
-  final noteId = await noteBox.add(value);
-  value.noteId = noteId;
-  noteBox.put(noteId, value);
-  questionNoteNotifier.value = noteBox.values.toList();
-  questionNoteNotifier.notifyListeners();
-}
-
-Future<void> deleteNotes(int id) async {
-  final noteBox = await Hive.openBox<QuestionNotes>('QuestionNotes');
-  await noteBox.delete(id);
-  questionNoteNotifier.notifyListeners();
-}
-
-Future<void> deleteCourse(int id) async {
-  final courseBox = await Hive.openBox<Course>('AddNewCourse');
-  await courseBox.delete(id);
-  courseNotifier.notifyListeners();
-  fechingCourseDetails();
-}
-
-Future<void> deleteSubCourse(int id) async {
-  final subCourseBox = await Hive.openBox<SubCourse>('AddNewSubCourse');
-  await subCourseBox.delete(id);
-  subCourseNotifier.notifyListeners();
-  fechingSubcourse();
-}
-
-Future<void> deletePlaylist(int id) async {
-  final playlistBox = await Hive.openBox<TutorialPlayList>('AddPlaylist');
-  await playlistBox.delete(id);
-  playlistNotifier.notifyListeners();
-  fechingPlaylist();
-}
+ValueNotifier<List<TutorialPlayList>> favoritePlaylistNotifier =
+    ValueNotifier([]);
 
 Future<void> updatePlaylist(
     int playlistId, String playlistTitle, String subCourseVideos) async {
@@ -151,7 +63,7 @@ Future<void> updateCouse(
     return;
   }
   final id = course.id;
-  
+
   final updatedCourse = Course(
     id: id,
     courseThumbnailPath: thumbnail,
@@ -186,7 +98,6 @@ Future<void> updateSubCourseTitle(
     print(
         'After Update: ${updatedsubCourse.subCourseTitle}, ${updatedsubCourse.subCourseThumbnailPath}');
     print(subIndex);
-    // Optionally, update the notifier to refresh the UI
     subCourseNotifier.value = updatedSubCourseBox.values.toList();
     subCourseNotifier.notifyListeners();
   } else {
@@ -194,69 +105,54 @@ Future<void> updateSubCourseTitle(
   }
 }
 
-Future<void> addEnrolledCourse(int courseId) async {
-  final enrolledBox = await Hive.openBox<int>('EnrolledCourse');
-   await enrolledBox.add(courseId);
-  print('added added');
-
-}
-Future<void> getAllEnrolledCourse() async{
-  final enrolledBox = await Hive.openBox<int>('EnrolledCourse');
-  List<int> enrolledIdList = enrolledBox.values.toList();
-  enrolledCourseNotifier.value = enrolledIdList.map((element) { 
-   final  en = courseNotifier.value.firstWhere((course) => course.id==element,);
-   return en;
-  }
-  ).toList();
-  enrolledCourseNotifier.notifyListeners();
-
-}
-Future<void> deleteEnrolledCourse(int id) async {
-  final enrolledBox = await Hive.openBox<int>('EnrolledCourse');
-  await enrolledBox.delete(id);
-  playlistNotifier.notifyListeners();
-  getAllEnrolledCourse();
-}
-
-
-
-Future<void> addFavoritePlaylist(int playlistId)async{
+Future<void> addFavoritePlaylist(int playlistId) async {
   final favoriteBox = await Hive.openBox<int>('Favorites');
   await favoriteBox.add(playlistId);
+  favoritePlaylistNotifier.notifyListeners();
+  
 }
 
 
-Future<void> getAllFavorites()async{
+Future<void> getAllFavorites() async {
   final favoriteBox = await Hive.openBox<int>('Favorites');
-  //favoritePlaylistNotifier.value = favoriteBox.values.toList();
   List<int> favoriteList = favoriteBox.values.toList();
-  favoritePlaylistNotifier.value = favoriteList.map((element) { 
-   final  en = playlistNotifier.value.firstWhere((course) => course.playlistId==element,);
-   return en;
+
+  print('Favorite List: $favoriteList');
+
+  // Ensure playlistNotifier is not null and has data
+  if (playlistNotifier.value.isEmpty) {
+    print('No playlists available in playlistNotifier');
+    return;
   }
-  ).toList();
-  print('not added item in favouritePlaylist');
+
+  // Create a set of existing playlist IDs for fast lookup
+  final existingPlaylistIds = playlistNotifier.value.map((course) => course.playlistId).toSet();
+  print('Existing Playlist IDs: $existingPlaylistIds');
+
+  // Filter and map favoriteList to only include valid entries
+  List<TutorialPlayList> updatedFavorites = favoriteList
+      .where((id) => existingPlaylistIds.contains(id)) // Filter out IDs that don't exist
+      .map((id) => playlistNotifier.value.firstWhere(
+            (course) => course.playlistId == id,
+          ))
+      .toList();
+
+  print('Updated Favorites: $updatedFavorites');
+
+  favoritePlaylistNotifier.value = updatedFavorites;
   favoritePlaylistNotifier.notifyListeners();
 }
 
 
-
-Future<void> deleteFavoriteCourse(int playlistId) async {
-  final favoriteBox = await Hive.openBox<int>('Favorites');
-  List<int> list = favoriteBox.values.toList();
- 
-  print('delete funtion worked   ${playlistId}');
-  favoritePlaylistNotifier.notifyListeners();
-
-
-  int ind = 0;
-  for (var i = 0; i < list.length; i++) {
-  if (list[i] == playlistId) {
-     ind = i;
-     break;
-    }
-  }
- await favoriteBox.deleteAt(ind);
-}
-
-
+// Future<void> getAllFavorites() async {
+//   final favoriteBox = await Hive.openBox<int>('Favorites');
+//   List<int> favoriteList = favoriteBox.values.toList();
+//   favoritePlaylistNotifier.value = favoriteList.map((element) {
+//     final en = playlistNotifier.value.firstWhere(
+//       (course) => course.playlistId == element,
+//     );
+//     return en;
+//   }).toList();
+//   print('not added item in favouritePlaylist');
+//   favoritePlaylistNotifier.notifyListeners();
+// }

@@ -75,7 +75,7 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
                         AnimSearchBar(
                             color: Colors.transparent,
                             boxShadow: false,
-                            prefixIcon:const Icon(
+                            prefixIcon: const Icon(
                               Icons.search,
                               color: themeTextColor,
                             ),
@@ -95,7 +95,6 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
               ),
             ),
           ),
-
           ValueListenableBuilder<List<Course>>(
             valueListenable: courseNotifier,
             builder: (context, courses, child) {
@@ -123,8 +122,8 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
                 return SliverToBoxAdapter(
                   child: SizedBox(
                     width: ScreenSize.widthMed,
-                    height: ScreenSize.heightMed*0.6 ,
-                    child:const Center(
+                    height: ScreenSize.heightMed * 0.6,
+                    child: const Center(
                       child: Text(
                         'No items found',
                         style: TextStyle(
@@ -177,7 +176,6 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
               }
             },
           ),
-
           const SliverToBoxAdapter(
             child: SizedBox(
               height: 20,
