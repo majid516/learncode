@@ -118,7 +118,9 @@
 //     }
 //   }
 // }
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/continue_btn.dart';
@@ -151,7 +153,9 @@ class _NameEnteringPageState extends State<NameEnteringPage> {
             bool isMobile = constraints.maxWidth < 600;
 
             double avatarRadius = isMobile ? 60 : 100;
-            double containerWidth = isMobile ? constraints.maxWidth * 0.8 : constraints.maxWidth * 0.5;
+            double containerWidth = isMobile
+                ? constraints.maxWidth * 0.8
+                : constraints.maxWidth * 0.5;
 
             return SingleChildScrollView(
               child: Container(
@@ -170,10 +174,13 @@ class _NameEnteringPageState extends State<NameEnteringPage> {
                       },
                       child: CircleAvatar(
                         radius: avatarRadius,
+
                         backgroundImage: image != null
-                            ? FileImage(File(image!))
-                            : const AssetImage('asset/image/userImage.jpeg')
-                                as ImageProvider,
+                            ? (kIsWeb
+                                ? MemoryImage(base64Decode(image!)) 
+                                : FileImage(File(image!))) 
+                            : const AssetImage(
+                                'asset/image/userImage.jpeg'), 
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -243,9 +250,16 @@ class _NameEnteringPageState extends State<NameEnteringPage> {
     final XFile? selectedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
-      setState(() {
-        image = selectedImage.path;
-      });
+      if (kIsWeb) {
+        var imageBytes = await selectedImage.readAsBytes();
+        setState(() {
+          image = base64Encode(imageBytes);
+        });
+      } else {
+        setState(() {
+          image = selectedImage.path;
+        });
+      }
     }
   }
 }

@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
@@ -24,7 +26,6 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
 
   @override
   Widget build(BuildContext context) {
-    //  getAllEnrolledCourse();
     return SafeArea(
       child: Scaffold(
         backgroundColor: whiteColor,
@@ -67,8 +68,8 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                               padding: const EdgeInsets.only(top: 25.0),
                               child: InkWell(
                                 child: Container(
-                                  width: ScreenSize.widthMed,
-                                  height: ScreenSize.widthMed * 0.3,
+                                  width:kIsWeb?ScreenSize.widthMed*0.8: ScreenSize.widthMed,
+                                  height:kIsWeb?ScreenSize.widthMed*0.1: ScreenSize.widthMed * 0.3,
                                   decoration: BoxDecoration(
                                       color: whiteColor,
                                       borderRadius: BorderRadius.circular(10),
@@ -88,9 +89,9 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                                           Row(
                                             children: [
                                               Container(
-                                                width:
+                                                width:kIsWeb?ScreenSize.widthMed* 0.13:
                                                     ScreenSize.widthMed * 0.3,
-                                                height:
+                                                height:kIsWeb?ScreenSize.widthMed* 0.08:
                                                     ScreenSize.widthMed * 0.2,
                                                 decoration: BoxDecoration(
                                                     boxShadow: [
@@ -103,7 +104,11 @@ class _MyEnrolledCoursesState extends State<MyEnrolledCourses> {
                                                         BorderRadius.circular(
                                                             10),
                                                     image: DecorationImage(
-                                                        image: FileImage(
+                                                        image:kIsWeb?
+                                                        MemoryImage(
+                                                     base64Decode(courseData
+                                                          .courseThumbnailPath))
+                                                          :FileImage(
                                                           File(
                                                             courseData
                                                                 .courseThumbnailPath,

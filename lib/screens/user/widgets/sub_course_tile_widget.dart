@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/constants/mediaquery.dart';
@@ -83,59 +85,81 @@ class SubTutorialTileWidget extends StatelessWidget {
           );
         }
       },
-      child: Stack(
-        children: [
-          Container(
-            width: ScreenSize.widthMed * 0.43,
-            height: ScreenSize.widthMed * 0.55,
-            decoration: BoxDecoration(
-              gradient: tileColors[index],
-              borderRadius: index.isEven
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(35),
-                      bottomRight: Radius.circular(35))
-                  : const BorderRadius.only(
-                      topRight: Radius.circular(35),
-                      bottomLeft: Radius.circular(35)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  offset: const Offset(0, 10),
-                  blurRadius: 10,
-                ),
-              ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isMobile = constraints.minWidth < 600;
+
+      double containerWidth =
+          isMobile ? constraints.maxWidth * 0.7 : constraints.maxWidth * 0.8;
+      double containerHieght =
+          isMobile ? constraints.maxWidth * 0.7 : constraints.maxWidth * 0.3;
+      double imgWidth =
+          isMobile ? constraints.maxWidth * 0.6 : constraints.maxWidth * 0.2;
+      double imgHeight =
+          isMobile ? constraints.maxWidth * 0.4 : constraints.maxWidth * 0.2;
+
+          return
+        Stack(
+          children: [
+            Container(
+              width: containerWidth,
+              height: containerHieght,
+              decoration: BoxDecoration(
+                gradient: tileColors[index],
+                borderRadius: index.isEven
+                    ? const BorderRadius.only(
+                        topLeft: Radius.circular(35),
+                        bottomRight: Radius.circular(35))
+                    : const BorderRadius.only(
+                        topRight: Radius.circular(35),
+                        bottomLeft: Radius.circular(35)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    offset: const Offset(0, 10),
+                    blurRadius: 10,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-              top: 25,
-              left: 15,
-              child: Container(
-                  width: ScreenSize.widthMed * 0.36,
-                  height: ScreenSize.widthMed * 0.25,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: FileImage(
-                            File(currentSubCourse.subCourseThumbnailPath)),
-                        fit: BoxFit.cover),
-                    borderRadius: BorderRadius.circular(25),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        offset: const Offset(0, 10),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ))),
-          Positioned(
-            top: 150,
-            left: 25,
-            child: Text(currentSubCourse.subCourseTitle,
-                style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: whiteColor)),
-          ),
-        ],
+            Positioned(
+                top: 25,
+                left: 15,
+                child: Container(
+                    width: imgWidth,
+                    height: imgHeight,
+                    decoration: BoxDecoration(
+                   image: kIsWeb
+                          ? DecorationImage(
+                             image: MemoryImage(base64Decode(currentSubCourse.subCourseThumbnailPath)),
+                              fit: BoxFit.fill,
+                            )
+                          : DecorationImage(
+                              image: FileImage(File(currentSubCourse.subCourseThumbnailPath)),
+                              fit: BoxFit.fill,
+                            ),
+                  
+                      borderRadius: BorderRadius.circular(25),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          offset: const Offset(0, 10),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ))),
+            Positioned(
+              top:kIsWeb?250: 150,
+              left: 25,
+              child: Text(currentSubCourse.subCourseTitle,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: whiteColor)),
+            ),
+          ],
+        );
+        }
       ),
     );
   }

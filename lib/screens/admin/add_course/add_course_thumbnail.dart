@@ -126,8 +126,8 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
           InkWell(
             onTap: pickImage,
             child: Container(
-              width: ScreenSize.widthMed * 0.4,
-              height: ScreenSize.widthMed * 0.3,
+               width:kIsWeb?ScreenSize.widthMed * 0.25: ScreenSize.widthMed * 0.4,
+                  height:kIsWeb?ScreenSize.widthMed * 0.17: ScreenSize.widthMed * 0.3,
               decoration: BoxDecoration(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
@@ -162,7 +162,7 @@ class _AddCourseThumbnailState extends State<AddCourseThumbnail> {
           ),
           SizedBox(height: ScreenSize.heightMed * 0.05),
           Container(
-            width: ScreenSize.widthMed * 0.75,
+            width:kIsWeb?ScreenSize.widthMed * 0.5: ScreenSize.widthMed * 0.75,
             height: 60,
             decoration: BoxDecoration(
               color: whiteColor,

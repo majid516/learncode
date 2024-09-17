@@ -1,5 +1,7 @@
 
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/models/admin_details.dart';
@@ -44,7 +46,8 @@ class AdminAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
           child: CircleAvatar(
             radius: 25,
             backgroundImage: AdminAccountScreen.adminDetails?.adminProfile != null
-                ? FileImage(File(AdminAccountScreen.adminDetails!.adminProfile!))
+                ?kIsWeb?MemoryImage(base64Decode(AdminAccountScreen.adminDetails!.adminProfile!))
+                : FileImage(File(AdminAccountScreen.adminDetails!.adminProfile!))
                 : const AssetImage('asset/image/user.jpeg') as ImageProvider,
           ),
         ),

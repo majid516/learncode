@@ -53,7 +53,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               const Text(
                 'We collect the following types of information when you use Learn Code:\n'
-                '- **Personal Information**: Name, email address, and profile picture when you create an account.\n'
+                '- **Personal Information**: Name, and profile picture when you create an account.\n'
                 '- **Usage Data**: Information about how you interact with the app, such as enrolled courses, playlists, and progress tracking.\n',
                 style:mediumSizedText,
               ),

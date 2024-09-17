@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -76,6 +75,7 @@ Future<void> updateCouse(
   print('id = ${id}');
   print(updatedCourse);
   await courseBoxs.put(id, updatedCourse);
+  courseNotifier.notifyListeners();
 }
 
 Future<void> updateSubCourseTitle(
@@ -144,15 +144,3 @@ Future<void> getAllFavorites() async {
 }
 
 
-// Future<void> getAllFavorites() async {
-//   final favoriteBox = await Hive.openBox<int>('Favorites');
-//   List<int> favoriteList = favoriteBox.values.toList();
-//   favoritePlaylistNotifier.value = favoriteList.map((element) {
-//     final en = playlistNotifier.value.firstWhere(
-//       (course) => course.playlistId == element,
-//     );
-//     return en;
-//   }).toList();
-//   print('not added item in favouritePlaylist');
-//   favoritePlaylistNotifier.notifyListeners();
-// }

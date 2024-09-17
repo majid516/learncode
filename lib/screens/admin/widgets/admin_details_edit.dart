@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,9 +24,16 @@ class _AdminDetailsEditState extends State<AdminDetailsEdit> {
   Future<void> pickImageFromGallery() async {
     final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
+       if (kIsWeb) {
+        var imageBytes = await selectedImage.readAsBytes();
+        setState(() {
+           AdminDetailsEdit.adminProfile = base64Encode(imageBytes);
+        });
+      } else {
       setState(() {
         AdminDetailsEdit.adminProfile = selectedImage.path;
       });
+      }
     }
   }
 
@@ -57,7 +66,9 @@ class _AdminDetailsEditState extends State<AdminDetailsEdit> {
                   borderRadius: BorderRadius.circular(15),
                   image: AdminDetailsEdit.adminProfile != null
                       ? DecorationImage(
-                          image: FileImage(File(AdminDetailsEdit.adminProfile!)),
+                          image: kIsWeb?
+                          MemoryImage(base64Decode(AdminDetailsEdit.adminProfile!))
+                         : FileImage(File(AdminDetailsEdit.adminProfile!)),
                           fit: BoxFit.fill,
                         )
                       : null,

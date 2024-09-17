@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flick_video_player/flick_video_player.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/buttons/add_sub_course.dart';
@@ -19,6 +20,8 @@ import 'package:learncode/screens/admin/update_corse.dart/update_course_details.
 import 'package:learncode/screens/user/provider/enrolled_course_provider.dart';
 import 'package:learncode/screens/user/widgets/enrolling_alert.dart';
 import 'package:learncode/screens/user/widgets/sub_course_tile_widget.dart';
+import 'package:learncode/screens/web_screen/add_course_details_web.dart';
+import 'package:learncode/screens/web_screen/update_couse_web.dart';
 import 'package:video_player/video_player.dart';
 
 class AdminTutorialMainPageDetails extends StatefulWidget {
@@ -62,15 +65,50 @@ class _AdminTutorialMainPageDetailsState
     getAllEnrolledCourse();
 
     super.initState();
-    flickManager = FlickManager(
-      autoPlay: false,
-      videoPlayerController: VideoPlayerController.file(File(widget.introVideo))
-        ..initialize().then((_) {
-          setState(() {});
-        }).catchError((error) {
-          return null;
-        }),
-    );
+    // flickManager = FlickManager(
+    //   autoPlay: false,
+    //   videoPlayerController: VideoPlayerController.file(File(widget.introVideo))
+    //     ..initialize().then((_) {
+    //       setState(() {});
+    //     }).catchError((error) {
+    //       return null;
+    //     }),
+    // );
+    @override
+    void initState() {
+      super.initState();
+
+      if (kIsWeb) {
+        // Web-specific video controller (use a URL)
+        flickManager = FlickManager(
+          autoPlay: false,
+          videoPlayerController:
+              VideoPlayerController.network(widget.introVideo)
+                ..initialize().then((_) {
+                  setState(() {});
+                }).catchError((error) {
+                  // Handle error
+                  print('Error initializing video: $error');
+                }),
+        );
+      } else {
+        // Mobile/desktop-specific video controller (use a file)
+        flickManager = FlickManager(
+          autoPlay: false,
+          videoPlayerController:
+              VideoPlayerController.file(File(widget.introVideo))
+                ..initialize().then((_) {
+                  setState(() {});
+                }).catchError((error) {
+                  // Handle error
+                  print('Error initializing video: $error');
+                }),
+        );
+      }
+
+      filterPlaylist(widget.id);
+      fetchSubCourses(widget.tutorialTitle);
+    }
 
     fetchSubCourses(widget.tutorialTitle);
   }
@@ -158,13 +196,19 @@ class _AdminTutorialMainPageDetailsState
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: kIsWeb?ScreenSize.heightMed*0.03:10,),
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: SizedBox(
-                  width: ScreenSize.widthMed * 0.9,
-                  height: ScreenSize.heightMed * 0.26,
-                  child: FlickVideoPlayer(flickManager: flickManager),
+                  width:kIsWeb?ScreenSize.widthMed * 0.5: ScreenSize.widthMed * 0.9,
+                  height:kIsWeb?ScreenSize.widthMed * 0.28: ScreenSize.heightMed * 0.26,
+                  child: kIsWeb
+                      ? AddCourseDetails.videoElementId != null
+                          ? HtmlElementView(
+                              viewType: AddCourseDetails.videoElementId!)
+                          : const Center(
+                              child: Text('No video selected for web'))
+                      : FlickVideoPlayer(flickManager: flickManager),
                 ),
               ),
               const SizedBox(height: 20),
@@ -199,8 +243,8 @@ class _AdminTutorialMainPageDetailsState
                           physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                            mainAxisExtent: 230,
-                            crossAxisCount: 2,
+                            mainAxisExtent:kIsWeb?500: 230,
+                            crossAxisCount: kIsWeb?3:2,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 20,
                           ),

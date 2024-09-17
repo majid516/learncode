@@ -1,4 +1,5 @@
 import 'package:anim_search_bar/anim_search_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
@@ -137,7 +138,7 @@ class _AdminViewScreeenState extends State<AdminViewScreeen> {
               } else {
                 return SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                    crossAxisCount:kIsWeb?3: 2,
                     mainAxisSpacing: 30,
                     crossAxisSpacing: 10,
                   ),

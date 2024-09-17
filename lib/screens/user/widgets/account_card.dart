@@ -17,9 +17,9 @@ class AccountCard extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: LayoutBuilder(builder: (context, constraints) {
-        bool isMobile = constraints.maxWidth < 600;
+        bool isMobile = constraints.minWidth < 600;
 
-        double containerSize = isMobile ? ScreenSize.widthMed*0.27: ScreenSize.widthMed*0.17;
+        double containerSize = isMobile ? ScreenSize.widthMed *0.12: ScreenSize.widthMed*0.25;
      
         return SizedBox(
           width: containerSize,

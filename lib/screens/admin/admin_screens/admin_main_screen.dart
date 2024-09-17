@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:learncode/constants/constants.dart';
 import 'package:learncode/database/course_add_functions.dart';
-import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/models/course.dart';
 import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/admin/add_course/add_course_details.dart';
@@ -11,6 +11,7 @@ import 'package:learncode/screens/admin/add_course/add_new_course.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_account_screen.dart';
 import 'package:learncode/screens/admin/admin_screens/admin_view_screen.dart';
 import 'package:learncode/screens/admin/widgets/admin_appabar_widget.dart';
+import 'package:learncode/screens/web_screen/add_course_details_web.dart';
 
 class AdminMainScreen extends StatefulWidget {
   final UserDetails userDetails;
@@ -43,7 +44,10 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               courseThumbnailPath: AddCourseThumbnail.thumbnail!,
               courseTitle: AddCourseThumbnail.courseTitleController.text,
               courseDetails: CourseDetails(
-                courseIntroductionVideo: AddCourseDetails.pickedVideo!.path,
+                courseIntroductionVideo: 
+              
+                   // ? AddCourseDetailsWeb.pickedVideo!.path
+                     AddCourseDetails.pickedVideo!.path,
                 courseDescription:
                     AddCourseDetails.courseDiscriptionController.text,
               ),

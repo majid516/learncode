@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/models/user_details.dart';
 import 'package:learncode/screens/user/user_screens/get_started_page.dart';
 import 'package:learncode/screens/user/user_screens/user_home_screen.dart';
-import 'package:learncode/screens/user/widgets/appbar_widget.dart';
 
 Future<void> addUserDetails(UserDetails value)async{
  final userBox = await Hive.openBox<UserDetails>('UserDetails');
@@ -25,12 +24,4 @@ Future<void> checkUserDetails(BuildContext ctx) async {
       ),
     );
   }
-}
-
-Future<void> getUser()async{
-  final user = await Hive.openBox<UserDetails>('UserDetails');
-  user.clear();
- AppbarWidget.userDataList.add(user.values.first.userName) ;
-  AppbarWidget.userDataList.add(user.values.first.userProfile!) ;
-
 }

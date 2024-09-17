@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/database/delete_funtions.dart';
 import 'package:learncode/models/course.dart';
@@ -49,9 +50,17 @@ class _UserPlayListPageState extends State<UserPlayListPage> {
           children: [
             Stack(
               children: [
+                 LayoutBuilder(
+                  builder: (context, constraints) {
+                     bool isMobile = constraints.minWidth < 600;
+
+      double containerHieght =
+          isMobile ? constraints.maxWidth * 0.2 : constraints.maxWidth * 0.2;
+  
+                    return 
                 Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width * 0.65,
+                  width: ScreenSize.widthMed,
+                  height: containerHieght,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
@@ -63,7 +72,8 @@ class _UserPlayListPageState extends State<UserPlayListPage> {
                       bottomRight: Radius.circular(30),
                     ),
                   ),
-                ),
+                );
+                  },),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 25, horizontal: 25),

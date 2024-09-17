@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learncode/buttons/add_sub_course.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
+import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
 import 'package:learncode/database/delete_funtions.dart';
 import 'package:learncode/models/course.dart';
@@ -9,6 +10,7 @@ import 'package:learncode/screens/admin/add_course/add_playlist_title.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_sub_course_title.dart';
 import 'package:learncode/screens/admin/widgets/delete_alert.dart';
 import 'package:learncode/screens/user/widgets/playlist_list.dart';
+import 'package:learncode/screens/web_screen/add_playlist_web.dart';
 
 // ignore: must_be_immutable
 class AdminPlaylistPage extends StatefulWidget {
@@ -38,6 +40,7 @@ class AdminPlaylistPage extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _AdminPlayListPageState createState() => _AdminPlayListPageState();
+  
 }
 
 List<TutorialPlayList> filteredPlaylists = [];
@@ -54,20 +57,30 @@ class _AdminPlayListPageState extends State<AdminPlaylistPage> {
           children: [
             Stack(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width * 0.65,
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                          'asset/image/5 Tips To Create Awesome Slideshows.jpeg'),
-                      fit: BoxFit.cover,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                     bool isMobile = constraints.minWidth < 600;
+
+      double containerHieght =
+          isMobile ? constraints.maxWidth * 0.2 : constraints.maxWidth * 0.2;
+  
+                    return Container(
+                    width:ScreenSize.widthMed,
+                    height: containerHieght,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(
+                            'asset/image/5 Tips To Create Awesome Slideshows.jpeg'),
+                        fit: BoxFit.cover,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(30),
+                        bottomRight: Radius.circular(30),
+                      ),
                     ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                  ),
+                  );
+                  },
+                   
                 ),
                 Padding(
                   padding:

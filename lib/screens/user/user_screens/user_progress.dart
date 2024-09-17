@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/buttons/backbutton.dart';
 import 'package:learncode/constants/constants.dart';
@@ -74,8 +76,8 @@ class _UserProgressPageState extends State<UserProgressPage> {
                           padding: const EdgeInsets.only(top: 25.0),
                           child: InkWell(
                             child: Container(
-                              width: ScreenSize.widthMed,
-                              height: ScreenSize.widthMed * 0.3,
+                              width:kIsWeb?ScreenSize.widthMed*0.8: ScreenSize.widthMed,
+                              height:kIsWeb?ScreenSize.widthMed*0.1: ScreenSize.widthMed * 0.3,
                               decoration: BoxDecoration(
                                 color: whiteColor,
                                 borderRadius: BorderRadius.circular(10),
@@ -100,16 +102,23 @@ class _UserProgressPageState extends State<UserProgressPage> {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               child: Container(
-                                                width:
-                                                    ScreenSize.widthMed * 0.27,
-                                                height:
-                                                    ScreenSize.widthMed * 0.2,
+                                                width: kIsWeb
+                                                    ? ScreenSize.widthMed * 0.13
+                                                    : ScreenSize.widthMed *
+                                                        0.27,
+                                                height: kIsWeb
+                                                    ? ScreenSize.widthMed * 0.08
+                                                    : ScreenSize.widthMed * 0.2,
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
-                                                    image: FileImage(
-                                                      File(course
-                                                          .courseThumbnailPath),
-                                                    ),
+                                                    image: kIsWeb
+                                                        ? MemoryImage(
+                                                            base64Decode(course
+                                                                .courseThumbnailPath))
+                                                        : FileImage(
+                                                            File(course
+                                                                .courseThumbnailPath),
+                                                          ),
                                                     fit: BoxFit.fill,
                                                   ),
                                                   boxShadow: [
@@ -146,8 +155,9 @@ class _UserProgressPageState extends State<UserProgressPage> {
                                                 Row(
                                                   children: [
                                                     SizedBox(
+
                                                       height: 10,
-                                                      width:
+                                                      width:kIsWeb?ScreenSize.widthMed*0.75:
                                                           ScreenSize.widthMed *
                                                               0.42,
                                                       child:

@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/submit_button.dart';
@@ -55,16 +57,21 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               InkWell(
                 onTap: pickImageFromGallery,
                 child: Container(
-                  width: ScreenSize.widthMed * 0.4,
-                  height: ScreenSize.widthMed * 0.3,
+                  width:kIsWeb?ScreenSize.widthMed * 0.25: ScreenSize.widthMed * 0.4,
+                  height:kIsWeb?ScreenSize.widthMed * 0.17: ScreenSize.widthMed * 0.3,
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(15),
                     image: thumbnail != null
+                        ?(kIsWeb
                         ? DecorationImage(
-                            image: FileImage(File(thumbnail!)),
-                            fit: BoxFit.cover,
+                            image: MemoryImage(base64Decode(thumbnail!)),
+                            fit: BoxFit.fill,
                           )
+                        : DecorationImage(
+                            image: FileImage(File(thumbnail!)),
+                            fit: BoxFit.fill,
+                          ))
                         : null,
                   ),
                   child: thumbnail == null
@@ -81,7 +88,7 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
               ),
               SizedBox(height: ScreenSize.heightMed * 0.05),
               Container(
-                width: ScreenSize.widthMed * 0.75,
+                width:kIsWeb?ScreenSize.widthMed * 0.5: ScreenSize.widthMed * 0.75,
                 height: 60,
                 decoration: BoxDecoration(
                   color: whiteColor,
@@ -141,9 +148,16 @@ class _AddSubCourseThumbnailState extends State<AddSubCourseThumbnail> {
     final XFile? selectedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
+      if (kIsWeb) {
+        var imageBytes = await selectedImage.readAsBytes();
+        setState(() {
+        thumbnail = base64Encode(imageBytes);
+        });
+      } else {
       setState(() {
         thumbnail = selectedImage.path;
       });
+      }
     }
   }
 }

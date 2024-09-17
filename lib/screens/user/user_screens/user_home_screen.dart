@@ -1,4 +1,5 @@
 import 'package:anim_search_bar/anim_search_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:learncode/constants/mediaquery.dart';
 import 'package:learncode/database/database_funtions.dart';
@@ -16,7 +17,7 @@ class UserHomeScreen extends StatefulWidget {
   final UserDetails? userDetails;
   const UserHomeScreen({
     super.key,
-   this.userDetails,
+    this.userDetails,
   });
 
   @override
@@ -29,17 +30,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   List<Course> filterdList = [];
 
-  // Future<void> getCompletedPlaylist() async {
-  //   int count = await countTotalCompletedPlaylists();
-  //   setState(() {
-  //   //  totalCompletedPlaylist = count;
-  //   });
-  // }
-
   @override
   void initState() {
-   _progressService.count();
-   progressNotifier.addListener(_updateCount);
+    _progressService.count();
+    progressNotifier.addListener(_updateCount);
     _progressService.getCompletedPlaylist();
     fechingCourseDetails();
     fechPlaylist();
@@ -51,7 +45,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     });
     super.initState();
   }
- void _updateCount() {
+
+  void _updateCount() {
     setState(() {
       _progressService.count();
     });
@@ -83,14 +78,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         backgroundColor: homeColor,
         body: CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: AppbarWidget(
-                    userDetails: UserDetails(
-                        userName: widget.userDetails?.userName??'user',
-                        userProfile: widget.userDetails?.userProfile??"asset/image/userImage.jpeg"),
-                  )),
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: AppbarWidget()),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -167,7 +158,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   return SliverGrid(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
+                      crossAxisCount: kIsWeb? 3: 2,
                       mainAxisSpacing: 30,
                       crossAxisSpacing: 10,
                     ),

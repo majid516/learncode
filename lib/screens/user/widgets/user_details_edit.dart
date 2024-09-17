@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,9 +25,16 @@ class _UserDetailsEditState extends State<UserDetailsEdit> {
     final XFile? selectedImage =
         await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
+       if (kIsWeb) {
+        var imageBytes = await selectedImage.readAsBytes();
+        setState(() {
+          UserDetailsEdit.userProfile = base64Encode(imageBytes);
+        });
+      } else {
       setState(() {
         UserDetailsEdit.userProfile = selectedImage.path;
       });
+      }
     }
   }
 
@@ -59,7 +68,9 @@ class _UserDetailsEditState extends State<UserDetailsEdit> {
                   borderRadius: BorderRadius.circular(15),
                   image: UserDetailsEdit.userProfile != null
                       ? DecorationImage(
-                          image: FileImage(File(UserDetailsEdit.userProfile!)),
+                          image:
+                          kIsWeb?MemoryImage(base64Decode(UserDetailsEdit.userProfile!))
+                          : FileImage(File(UserDetailsEdit.userProfile!)),
                           fit: BoxFit.fill,
                         )
                       : null,

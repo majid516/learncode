@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:learncode/buttons/submit_button.dart';
@@ -25,7 +26,6 @@ class UpdateSubCourseTitle extends StatefulWidget {
 
 class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
   final ImagePicker picker = ImagePicker();
-
   String? updatedThumbnail;
   final subTitleController = TextEditingController();
 
@@ -45,9 +45,13 @@ class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
-                  image: updatedThumbnail != null
-                      ? FileImage(File(updatedThumbnail!))
-                      : FileImage(File(widget.subcourseImage)),
+                  image: kIsWeb
+                      ? updatedThumbnail != null
+                          ? MemoryImage(base64Decode(updatedThumbnail!))
+                          : MemoryImage(base64Decode(widget.subcourseImage))
+                      : updatedThumbnail != null
+                          ? FileImage(File(updatedThumbnail!)) as ImageProvider
+                          : FileImage(File(widget.subcourseImage)),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -103,12 +107,18 @@ class _UpdateSubCourseTitleState extends State<UpdateSubCourseTitle> {
   }
 
   Future<void> pickImageFromGallery() async {
-    final XFile? selectedImage =
-        await picker.pickImage(source: ImageSource.gallery);
+    final XFile? selectedImage = await picker.pickImage(source: ImageSource.gallery);
     if (selectedImage != null) {
-      setState(() {
-        updatedThumbnail = selectedImage.path;
-      });
+      if (kIsWeb) {
+        var imageBytes = await selectedImage.readAsBytes();
+        setState(() {
+          updatedThumbnail = base64Encode(imageBytes);
+        });
+      } else {
+        setState(() {
+          updatedThumbnail = selectedImage.path;
+        });
+      }
     }
   }
 }

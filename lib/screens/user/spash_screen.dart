@@ -16,7 +16,6 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
   @override
   void initState() {
     goGetstarted(context);
-    getUser();
     super.initState();
   }
 

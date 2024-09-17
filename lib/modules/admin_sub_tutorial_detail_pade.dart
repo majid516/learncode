@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/buttons/add_sub_course.dart';
@@ -20,6 +21,8 @@ import 'package:learncode/screens/admin/add_course/add_notes.dart';
 import 'package:learncode/screens/admin/update_corse.dart/update_playlist.dart';
 import 'package:learncode/screens/admin/widgets/delete_alert.dart';
 import 'package:learncode/screens/user/provider/favourite_provider.dart';
+import 'package:learncode/screens/web_screen/add_playlist_web.dart';
+import 'package:learncode/screens/web_screen/update_playlist_web.dart';
 import 'package:video_player/video_player.dart';
 
 class AdminSubTutorialDetailPage extends StatefulWidget {
@@ -106,19 +109,46 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
   Future<void> _initializeVideo() async {
     final videoPlayerController =
         VideoPlayerController.file(File(widget.subVideo));
-    flickManager = FlickManager(
-      autoPlay: false,
-      videoPlayerController: videoPlayerController
-        ..initialize().then((_) {
-          if (mounted) {
-            setState(() {
-              videoDuration = videoPlayerController.value.duration;
-            });
-          }
-        }).catchError((error) {
-          return null;
-        }),
-    );
+    // flickManager = FlickManager(
+    //   autoPlay: false,
+    //   videoPlayerController: videoPlayerController
+    //     ..initialize().then((_) {
+    //       if (mounted) {
+    //         setState(() {
+    //           videoDuration = videoPlayerController.value.duration;
+    //         });
+    //       }
+    //     }).catchError((error) {
+    //       return null;
+    //     }),
+    // );
+     if (kIsWeb) {
+        // Web-specific video controller (use a URL)
+        flickManager = FlickManager(
+          autoPlay: false,
+          videoPlayerController:
+              VideoPlayerController.network(widget.subVideo)
+                ..initialize().then((_) {
+                  setState(() {});
+                }).catchError((error) {
+                  // Handle error
+                  print('Error initializing video: $error');
+                }),
+        );
+      } else {
+        // Mobile/desktop-specific video controller (use a file)
+        flickManager = FlickManager(
+          autoPlay: false,
+          videoPlayerController:
+              VideoPlayerController.file(File(widget.subVideo))
+                ..initialize().then((_) {
+                  setState(() {});
+                }).catchError((error) {
+                  // Handle error
+                  print('Error initializing video: $error');
+                }),
+        );
+      }
 
     videoPlayerController.addListener(() {
       if (videoPlayerController.value.isInitialized && videoDuration == null) {
@@ -248,9 +278,12 @@ class _TutorialMainPageDetailsState extends State<AdminSubTutorialDetailPage> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: SizedBox(
-                        width: ScreenSize.widthMed * 0.9,
-                        height: ScreenSize.widthMed * 0.52,
-                        child: FlickVideoPlayer(flickManager: flickManager),
+                       width:kIsWeb?ScreenSize.widthMed * 0.5: ScreenSize.widthMed * 0.9,
+                  height:kIsWeb?ScreenSize.widthMed * 0.28: ScreenSize.heightMed * 0.26,
+                        child:
+                        kIsWeb? HtmlElementView(
+                              viewType: AddPlaylistTitle.videoElementId!)
+                          :  FlickVideoPlayer(flickManager: flickManager)
                       ),
                     ),
                     Padding(

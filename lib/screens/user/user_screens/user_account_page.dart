@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learncode/buttons/backbutton.dart';
@@ -79,7 +81,8 @@ class _AccountPageState extends State<AccountPage> {
                       radius: 70,
                       // ignore: unnecessary_null_comparison
                       backgroundImage: userDetails.userProfile != null
-                          ? FileImage(File(userDetails.userProfile))
+                          ?kIsWeb?MemoryImage(base64Decode(userDetails.userProfile)) 
+                           :FileImage(File(userDetails.userProfile))
                           : const AssetImage('asset/image/userImage.jpeg')
                               as ImageProvider,
                     ),
